@@ -12,7 +12,11 @@ export class LoginComponent implements OnInit{
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.action = this.route.snapshot.data['action'];
+    this.route.data.subscribe({
+      next: data => {
+        this.action = data['action'];
+      }
+    });
   }
 
 }
