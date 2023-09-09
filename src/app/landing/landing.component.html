@@ -1,12 +1,26 @@
-<div class="flex flex-column 
-  align-items-center gap-1 my-2
-  ">
-  <div class="max-w-20rem md:max-w-25rem lg:max-w-30rem  mb-2">
-    <span>Welcome to </span> 
-    <span class="text-primary">CycleCompete</span>
-    <span> - an app that allows you to participate and organise your own bicycle races.</span>
+<div class="landing-bg-image h-full">
+  <div class="grid grid-nogutter">
+    <div class="col-12 text-center text-5xl font-bold pt-4">
+      CycleCompete
+    </div>
+    <div class="col-8  pl-5 pt-5 font-bold">
+      Organise and participate in local bicycle races.
+    </div>
   </div>
-  <button pButton label="Login" (click)="loginClick()"></button>
-  <button pButton label="Register" (click)="registerClick()"></button>
+  <div class="grid grid-nogutter">
+    <div class="col-12 pt-5 pb-2 text-center font-bold">
+      Register an account
+    </div>
+    <div class="col-12 flex flex-column align-items-center">
+      <button pButton class="font-bold" label="Register" (click)="registerClick()"></button>
+    </div>
+    <div class="col-12 grid grid-nogutter py-3">
+      <div class="col pl-6 pt-1"><hr></div>
+      <div class="col-fixed text-center px-0" style="width: 40px">or</div>
+      <div class="col pr-6 pt-1"><hr></div>
+    </div>
+    <div class="col-12 flex flex-column align-items-center">
+      <button pButton class="font-bold" label="Login" (click)="loginClick()"></button>
+    </div>
+  </div>
 </div>
-
