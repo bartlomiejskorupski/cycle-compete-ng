@@ -1,16 +1,1 @@
-<div class="flex flex-column h-screen text-color">
-  <div *ngIf="!loggedIn" class="flex flex-grow-1">
-    <app-landing class="w-full"></app-landing>
-  </div>
-  <ng-template [ngIf]="loggedIn">
-    <div class="flex-none">
-      <app-header class="flex flex-none"></app-header>
-    </div>
-    <main class="flex-grow-1 bg-secondary">
-      <router-outlet></router-outlet>
-    </main>
-  </ng-template>
-  <footer class="flex-none surface-ground border-top-1 border-primary px-1 py-3">
-    <p class="m-0 text-xs text-primary-700">&copy;2023 CycleCompete. All rights reserved.</p>
-  </footer>
-</div>
+<router-outlet></router-outlet>

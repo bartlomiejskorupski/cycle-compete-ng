@@ -1,6 +1,6 @@
 <div class="px-4 py-2">
   <p class="text-2xl text-center font-bold">Log in</p>
-  <form>
+  <form (ngSubmit)="onSubmit()">
     <div class="field">
       <label for="email">E-mail</label>
       <input id="email" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
@@ -9,6 +9,6 @@
       <label for="password">Password</label>
       <input id="password" type="password" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
     </div>
-    <button pButton type="button" label="Login" class="w-full mt-3"></button>
+    <button pButton type="submit" label="Login" class="w-full mt-3"></button>
   </form>
 </div>
