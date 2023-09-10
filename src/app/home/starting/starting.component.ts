@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DummyService } from 'src/service/dummy.service';
+import { DummyService } from 'src/app/service/dummy.service';
 
 @Component({
   selector: 'app-starting',
