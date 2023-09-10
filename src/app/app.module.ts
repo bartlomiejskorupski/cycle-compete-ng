@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { StartingComponent } from './home/starting/starting.component';
 import { AuthGuard } from './auth-guard.service';
+import { HttpClientModule } from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { AuthGuard } from './auth-guard.service';
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    ButtonModule
+    ButtonModule,
+    HttpClientModule
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]
