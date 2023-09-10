@@ -7,3 +7,7 @@ body {
 p {
   margin: 0;
 }
+
+.h-screen-dynamic {
+  height: 100dvh;
+}
