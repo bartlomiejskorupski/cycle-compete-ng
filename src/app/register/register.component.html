@@ -3,7 +3,7 @@
     CycleCompete
   </div>
   <div class="flex-grow-1 mx-4 mb-8 flex flex-column justify-content-center">
-    <div class="text-2xl text-center font-bold">Login</div>
+    <div class="text-2xl text-center font-bold">Register</div>
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm"
       class="grid grid-nogutter">
       <div class="col-12 field">
@@ -22,13 +22,13 @@
           name="password"
           ngModel required>
       </div>
-      <button pButton type="submit" label="Sign in"
+      <button pButton type="submit" label="Sign up"
         class="w-full mt-3"
         [disabled]="!loginForm.valid"></button>
     </form>
     <div class="text-md mt-3">
-      Don't have an account?
-      <a routerLink="/register" class="text-primary underline">Register</a>
+      Already have an account?
+      <a routerLink="/login" class="text-primary underline">Login</a>
     </div>
   </div>
 </div>

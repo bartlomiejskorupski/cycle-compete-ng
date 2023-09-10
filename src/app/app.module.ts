@@ -12,7 +12,9 @@ import { FormsModule } from '@angular/forms';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { StartingComponent } from './home/starting/starting.component';
 import { AuthGuard } from './auth-guard.service';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http';
+import { RegisterComponent } from './register/register.component'
+import { InputTextModule } from 'primeng/inputtext'
 
 @NgModule({
   declarations: [
@@ -22,14 +24,16 @@ import { HttpClientModule } from '@angular/common/http'
     LoginComponent,
     HomeComponent,
     PageNotFoundComponent,
-    StartingComponent
+    StartingComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     AppRoutingModule,
     ButtonModule,
-    HttpClientModule
+    ButtonModule,
   ],
   providers: [AuthGuard],
   bootstrap: [AppComponent]
