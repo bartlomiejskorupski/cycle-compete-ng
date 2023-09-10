@@ -1,8 +1,11 @@
-<div class="flex flex-column h-screen">
+<div class="flex flex-column h-screen surface-ground">
   <div class="flex-none text-3xl text-center font-bold text-primary mt-2">
     CycleCompete
   </div>
   <div class="flex-grow-1 mx-4 mb-8 flex flex-column justify-content-center">
+    <div class="flex-none">
+      <button type="button" pButton class="p-button-outlined pi pi-arrow-left px-2" routerLink="/"></button>
+    </div>
     <div class="text-2xl text-center font-bold">Register</div>
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm"
       class="grid grid-nogutter">

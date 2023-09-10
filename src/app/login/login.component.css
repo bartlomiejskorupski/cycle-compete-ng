@@ -1,0 +1,3 @@
+.ng-invalid.ng-touched {
+  border-color: rgb(164, 37, 37);
+}
