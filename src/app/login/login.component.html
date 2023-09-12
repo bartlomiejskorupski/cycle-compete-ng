@@ -10,23 +10,21 @@
     <div class="text-2xl text-center font-bold">Login</div>
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm"
       class="grid grid-nogutter">
-      <div class="col-12 field">
-        <label for="email">E-mail</label>
+      <div class="col-12 field p-float-label mt-2">
         <input pInputText type="text" id="email" 
           class="p-inputtext surface-overlay w-full"
-          placeholder="E-mail"
           name="email"
           autocomplete="email"
           ngModel required email>
+          <label for="email">E-mail</label>
       </div>
-      <div class="col-12 field">
-        <label for="password">Password</label>
-        <input pInputText type="password" id="password" 
-          class="p-inputtext surface-overlay w-full"
-          placeholder="Password"
-          name="password"
+      <div class="col-12 field p-float-label mt-2">
+        <p-password id="password" name="password" styleClass="w-full"
+          [feedback]="false" [toggleMask]="true"
           autocomplete="current-password"
           ngModel required>
+        </p-password>
+        <label for="password">Password</label>
       </div>
       <button pButton type="submit" label="Sign in"
         class="w-full mt-3"
