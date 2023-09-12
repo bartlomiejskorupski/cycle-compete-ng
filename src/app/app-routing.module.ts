@@ -4,7 +4,7 @@ import { LandingComponent } from "./landing/landing.component";
 import { LoginComponent } from "./login/login.component";
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./home/home.component";
-import { AuthGuard } from "./auth-guard.service";
+import { AuthGuard } from "./auth/auth-guard.service";
 import { PageNotFoundComponent } from "./page-not-found/page-not-found.component";
 import { StartingComponent } from "./home/starting/starting.component";
 import { RegisterComponent } from "./register/register.component";

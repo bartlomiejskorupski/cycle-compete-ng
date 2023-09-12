@@ -19,14 +19,17 @@
           autocomplete="email"
           ngModel required email>
       </div>
-      <div class="col-12 field">
-        <label for="password">Password</label>
-        <input pInputText type="password" id="password" 
+      <div class="col-12 field p-float-label">
+        <!-- <input pInputText type="password" id="password" 
           class="p-inputtext surface-overlay w-full"
           placeholder="Password"
           name="password"
           autocomplete="new-password"
-          ngModel required>
+          ngModel required> -->
+        <p-password id="password" [feedback]="false">
+        </p-password>
+        <label for="password">Password</label>
+
       </div>
       <button pButton type="submit" label="Sign up"
         class="w-full mt-3"
