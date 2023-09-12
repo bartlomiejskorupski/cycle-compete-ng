@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -9,6 +10,10 @@ import { AuthService } from '../auth/auth.service';
 })
 export class RegisterComponent {
   
+  loading = false;
+
+  @ViewChild('loginForm') loginForm: NgForm;
+
   constructor(
     private router: Router,
     private auth: AuthService
@@ -20,6 +25,7 @@ export class RegisterComponent {
 
   onSubmit() {
     //this.auth.login();
-    this.router.navigate(['/']);
+    // this.router.navigate(['/']);
   }
+  
 }

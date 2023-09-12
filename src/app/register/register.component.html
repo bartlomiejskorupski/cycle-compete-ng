@@ -10,26 +10,45 @@
     <div class="text-2xl text-center font-bold">Register</div>
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm"
       class="grid grid-nogutter">
-      <div class="col-12 field">
-        <label for="email">E-mail</label>
+      <div class="col-12 field p-float-label mt-2">
         <input pInputText type="text" id="email" 
           class="p-inputtext surface-overlay w-full"
-          placeholder="E-mail"
           name="email"
           autocomplete="email"
           ngModel required email>
+        <label class="text-color-secondary" for="email">E-mail</label>
       </div>
-      <div class="col-12 field p-float-label">
-        <!-- <input pInputText type="password" id="password" 
+      <div class="col field p-float-label mt-2 mr-1">
+        <input pInputText type="text" id="firstName" 
           class="p-inputtext surface-overlay w-full"
-          placeholder="Password"
-          name="password"
+          name="firstName"
+          autocomplete="given-name"
+          ngModel required>
+        <label class="text-color-secondary" for="firstName">First Name</label>
+      </div>
+      <div class="col field p-float-label mt-2 ml-1">
+        <input pInputText type="text" id="lastName" 
+          class="p-inputtext surface-overlay w-full"
+          name="lastName"
+          autocomplete="family-name"
+          ngModel required>
+        <label class="text-color-secondary" for="lastName">Last Name</label>
+      </div>
+      <div class="col-12 field p-float-label mt-2">
+        <p-password id="password" name="password" styleClass="w-full"
+          [feedback]="false" [toggleMask]="true"
           autocomplete="new-password"
-          ngModel required> -->
-        <p-password id="password" [feedback]="false">
+          ngModel required>
         </p-password>
-        <label for="password">Password</label>
-
+        <label class="text-color-secondary" for="password">Password</label>
+      </div>
+      <div class="col-12 field p-float-label mt-2">
+        <p-password id="password-repeat" name="password-repeat" styleClass="w-full"
+          [feedback]="false" [toggleMask]="true"
+          autocomplete="password-repeat"
+          ngModel required>
+        </p-password>
+        <label class="text-color-secondary" for="password-repeat">Repeat Password</label>
       </div>
       <button pButton type="submit" label="Sign up"
         class="w-full mt-3"
