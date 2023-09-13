@@ -56,8 +56,8 @@
           [hidden]="!pwdGrp.errors?.appPasswordsMatch || !rptPwd.touched">Passwords must match.</small>
       </div>
       <button pButton type="submit" label="Sign up"
-        class="w-full mt-3"
-        [disabled]="!registerForm.valid"></button>
+        class="w-full mt-3" [icon]="getSumbitIcon()" iconPos="right"
+        [disabled]="!registerForm.valid || loading"></button>
     </form>
     <div class="text-md mt-3">
       Already have an account?

@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
     else {
       // Error message
-      this.loginForm?.reset();
+      this.loginForm?.controls.password.reset();
     }
   }
 
@@ -51,6 +51,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.auth.login({email, password});
+  }
+
+  getSumbitIcon(): string {
+    return this.loading ? 'pi pi-spinner pi-spin' : '';
   }
 
 }

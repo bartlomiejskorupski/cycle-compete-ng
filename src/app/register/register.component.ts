@@ -39,7 +39,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
     else {
       // Error message
-      this.registerForm?.reset();
+      this.registerForm?.controls.passwords.reset();
     }
   }
 
@@ -53,4 +53,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.auth.register({email, firstname, lastname, password});
   }
   
+  getSumbitIcon(): string {
+    return this.loading ? 'pi pi-spinner pi-spin' : '';
+  }
+
 }
