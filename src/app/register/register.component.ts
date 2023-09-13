@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { NgForm } from '@angular/forms';
@@ -12,10 +12,11 @@ import { Subscription } from 'rxjs';
 export class RegisterComponent implements OnInit, OnDestroy {
   
   loading = false;
+  errorMessage = '';
 
   @ViewChild('registerForm') registerForm: NgForm;
 
-  private sub: Subscription
+  private subs: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -23,36 +24,39 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.sub = this.auth.authenticated$.subscribe({next: this.authChange});
+    
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
-
-  private authChange = (authenticated: boolean) => {
-    console.log('Auth change', authenticated);
-    
-    this.loading = false;
-    if(authenticated) {
-      this.router.navigate(['/home']);
-    }
-    else {
-      // Error message
-      this.registerForm?.controls.passwords.reset();
-    }
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 
   onSubmit() {
+    console.log('Submitted form: ', this.registerForm.value);
     const email = this.registerForm.value.email.trim();
     const firstname = this.registerForm.value.firstName.trim();
     const lastname = this.registerForm.value.lastName.trim();
     const password = this.registerForm.value.passwords.password.trim();
 
     this.loading = true;
-    this.auth.register({email, firstname, lastname, password});
+    this.errorMessage = '';
+    this.auth.register({email, firstname, lastname, password}).subscribe({
+      next: this.handleSuccess,
+      error: this.handleError
+    });
   }
   
+  private handleSuccess = (token: string) => {
+    this.loading = false;
+    this.router.navigate(['/home']);
+  }
+
+  private handleError = (error: Error): void => {
+    this.loading = false;
+    this.errorMessage = error.message;
+    this.registerForm.controls.passwords.reset();
+  }
+
   getSumbitIcon(): string {
     return this.loading ? 'pi pi-spinner pi-spin' : '';
   }

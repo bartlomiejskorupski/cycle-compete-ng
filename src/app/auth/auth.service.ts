@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, catchError, map, take, throwError } from "rxjs";
+import { BehaviorSubject, Observable, catchError, map, take, tap, throwError } from "rxjs";
 import { environment } from "src/environments/environment.development";
 import { AuthResponse } from "./model/auth-response.model";
 import { AuthRequest } from "./model/auth-request.model";
@@ -27,57 +27,51 @@ export class AuthService {
     this.url = environment.backendUrl + '/auth';
   }
 
-  login(loginData: AuthRequest): void {
-    this.http.post<AuthResponse>(
+  login(loginData: AuthRequest): Observable<string> {
+    return this.http.post<AuthResponse>(
       this.url + '/authenticate',
       loginData,
       ).pipe(
         take(1),
         catchError(this.handleError),
-        map(res => res.token)
-      ).subscribe({
-        next: this.handleSuccess,
-        error: err => {
-          console.error(err);
-        }
-      });
-  }
-
-  logout() {
-    this.authenticatedSub.next(false);
-    this.removeToken();
-  }
-
-  register(registerData: RegisterRequest) {
-    this.http.post<AuthResponse>(
-      this.url + '/register',
-      registerData,
-      ).pipe(
-        take(1),
-        catchError(this.handleError),
-        map(res => res.token)
-      ).subscribe({
-        next: this.handleSuccess,
-        error: err => {
-          console.error(err);
-        }
-      });
+        map(res => res.token),
+        tap(this.handleSuccess)
+      );
   }
 
   private handleSuccess = (token: string) => {
-    console.log('Token: ' + token);
+    console.log('Auth success:', token);
     this.token = token;
     this.authenticatedSub.next(true);
   }
 
   private handleError = (error: HttpErrorResponse) => {
-    if (error.status === 0) {
-      console.error('An error occurred:', error.error);
-    } else {
-      console.error(`Backend returned code ${error.status}, body was: `, error.error);
-    }
+    console.log('Handling error:', error.status, error.error);
+    this.removeToken();
     this.authenticatedSub.next(false);
-    return throwError(() => new Error('Something bad happened; please try again later.'));
+    switch(error.status) {
+      case 0: {
+        return throwError(() => new Error('Something went wrong'));
+      }
+    }
+    return throwError(() => new Error(error.error));
+  }
+
+  logout() {
+    this.removeToken();
+    this.authenticatedSub.next(false);
+  }
+
+  register(registerData: RegisterRequest): Observable<String> {
+    return this.http.post<AuthResponse>(
+      this.url + '/register',
+      registerData,
+      ).pipe(
+        take(1),
+        catchError(this.handleError),
+        map(res => res.token),
+        tap(this.handleSuccess)
+      );
   }
 
   private removeToken() {
