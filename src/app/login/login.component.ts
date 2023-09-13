@@ -45,12 +45,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.loginForm.value);
+    //console.log(this.loginForm.value);
     const email = this.loginForm.value.email.trim();
     const password = this.loginForm.value.password.trim();
 
     this.loading = true;
-    this.auth.login(email, password);
+    this.auth.login({email, password});
   }
 
 }

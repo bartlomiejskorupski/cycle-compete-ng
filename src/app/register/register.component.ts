@@ -9,11 +9,11 @@ import { Subscription } from 'rxjs';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
-export class RegisterComponent implements OnInit, AfterViewInit, OnDestroy {
+export class RegisterComponent implements OnInit, OnDestroy {
   
   loading = false;
 
-  @ViewChild('loginForm') loginForm: NgForm;
+  @ViewChild('registerForm') registerForm: NgForm;
 
   private sub: Subscription
 
@@ -23,26 +23,34 @@ export class RegisterComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    
-  }
-
-  ngAfterViewInit(): void {
-    this.sub = this.loginForm.valueChanges.subscribe({
-      next: val => {
-        //console.log(this.loginForm);
-        
-        
-      }
-    });
+    this.sub = this.auth.authenticated$.subscribe({next: this.authChange});
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
+  private authChange = (authenticated: boolean) => {
+    console.log('Auth change', authenticated);
+    
+    this.loading = false;
+    if(authenticated) {
+      this.router.navigate(['/home']);
+    }
+    else {
+      // Error message
+      this.registerForm?.reset();
+    }
+  }
+
   onSubmit() {
-    //this.auth.login();
-    // this.router.navigate(['/']);
+    const email = this.registerForm.value.email.trim();
+    const firstname = this.registerForm.value.firstName.trim();
+    const lastname = this.registerForm.value.lastName.trim();
+    const password = this.registerForm.value.passwords.password.trim();
+
+    this.loading = true;
+    this.auth.register({email, firstname, lastname, password});
   }
   
 }

@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, catchError, map, take, throwError } from "
 import { environment } from "src/environments/environment.development";
 import { AuthResponse } from "./model/auth-response.model";
 import { AuthRequest } from "./model/auth-request.model";
+import { RegisterRequest } from "./model/register-request.model";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -26,11 +27,10 @@ export class AuthService {
     this.url = environment.backendUrl + '/auth';
   }
 
-  login(email: string, password: string): void {
-    const requestBody: AuthRequest = { email, password };
+  login(loginData: AuthRequest): void {
     this.http.post<AuthResponse>(
       this.url + '/authenticate',
-      requestBody,
+      loginData,
       ).pipe(
         take(1),
         catchError(this.handleError),
@@ -48,8 +48,23 @@ export class AuthService {
     this.removeToken();
   }
 
+  register(registerData: RegisterRequest) {
+    this.http.post<AuthResponse>(
+      this.url + '/register',
+      registerData,
+      ).pipe(
+        take(1),
+        catchError(this.handleError),
+        map(res => res.token)
+      ).subscribe({
+        next: this.handleSuccess,
+        error: err => {
+          console.error(err);
+        }
+      });
+  }
+
   private handleSuccess = (token: string) => {
-    console.log('Logged in');
     console.log('Token: ' + token);
     this.token = token;
     this.authenticatedSub.next(true);
