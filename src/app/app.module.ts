@@ -18,6 +18,7 @@ import { RegisterComponent } from './register/register.component'
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password'
+import { PasswordsMatchDirective } from './shared/directive/passwords-match.directive';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { PasswordModule } from 'primeng/password'
     HomeComponent,
     PageNotFoundComponent,
     StartingComponent,
-    RegisterComponent
+    RegisterComponent,
+    PasswordsMatchDirective
   ],
   imports: [
     BrowserModule,
