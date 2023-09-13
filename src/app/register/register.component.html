@@ -35,7 +35,7 @@
         <label class="text-color-secondary" for="lastName">Last Name</label>
       </div>
       <div class="col-12 grid grid-nogutter"
-         ngModelGroup="passwords" appPasswordsMatch>
+         ngModelGroup="passwords" appPasswordsMatch #pwdGrp="ngModelGroup">
         <div class="col-12 field p-float-label mt-2">
           <p-password id="password" name="password" styleClass="w-full"
             [feedback]="false" [toggleMask]="true"
@@ -44,14 +44,16 @@
           </p-password>
           <label class="text-color-secondary" for="password">Password</label>
         </div>
-        <div class="col-12 field p-float-label mt-2">
+        <div class="col-12 field p-float-label mt-2 mb-1">
           <p-password id="passwordRepeat" name="passwordRepeat" styleClass="w-full"
             [feedback]="false" [toggleMask]="true"
             autocomplete="new-password"
-            ngModel required>
+            ngModel required #rptPwd="ngModel">
           </p-password>
           <label class="text-color-secondary" for="passwordRepeat">Repeat Password</label>
         </div>
+        <small class="p-error" 
+          [hidden]="!pwdGrp.errors?.appPasswordsMatch || !rptPwd.touched">Passwords must match.</small>
       </div>
       <button pButton type="submit" label="Sign up"
         class="w-full mt-3"

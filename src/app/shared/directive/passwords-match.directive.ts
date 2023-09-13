@@ -13,7 +13,8 @@ export class PasswordsMatchDirective implements Validator {
 
   validate(group: FormGroup): ValidationErrors {
     const passwordsMatch = group.controls.password?.value === group.controls.passwordRepeat?.value;
-    console.log('Passwords match:', passwordsMatch);
+    //console.log('Passwords match:', passwordsMatch);
+    //console.log(group);
     
     return !passwordsMatch ? { appPasswordsMatch: true } : null;
   }
