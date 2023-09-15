@@ -18,8 +18,10 @@
           class="p-inputtext surface-overlay w-full"
           name="email"
           autocomplete="email"
+          #email="ngModel"
           ngModel required email>
         <label class="text-color-secondary" for="email">E-mail</label>
+        <small class="p-error" [hidden]="!email.errors?.email || !email.touched">Incorrect E-mail</small>
       </div>
       <div class="col field p-float-label mt-2 mr-1">
         <input pInputText type="text" id="firstName" 
@@ -43,9 +45,10 @@
           <p-password id="password" name="password" styleClass="w-full"
             [feedback]="false" [toggleMask]="true"
             autocomplete="new-password"
-            ngModel required #password="ngModel">
+            ngModel required #password="ngModel" minlength="5">
           </p-password>
           <label class="text-color-secondary" for="password">Password</label>
+          <small class="p-error" [hidden]="!password.errors?.minlength || !password.touched">Password is too short</small>
         </div>
         <div class="col-12 field p-float-label mt-2 mb-1">
           <p-password id="passwordRepeat" name="passwordRepeat" styleClass="w-full"
@@ -55,8 +58,7 @@
           </p-password>
           <label class="text-color-secondary" for="passwordRepeat">Repeat Password</label>
         </div>
-        <small class="p-error" 
-          [hidden]="!pwdGrp.errors?.appPasswordsMatch || !rptPwd.touched">Passwords must match.</small>
+        <small class="p-error" [hidden]="!pwdGrp.errors?.appPasswordsMatch || !rptPwd.touched">Passwords must match.</small>
       </div>
       <button pButton type="submit" label="Sign up"
         class="w-full mt-3" [icon]="getSumbitIcon()" iconPos="right"
