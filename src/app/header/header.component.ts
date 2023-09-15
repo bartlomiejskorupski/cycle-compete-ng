@@ -14,10 +14,6 @@ export class HeaderComponent {
     private auth: AuthService
   ) {}
 
-  titleClick() {
-    this.router.navigate(['']);
-  }
-
   logout() {
     this.auth.logout();
     this.router.navigate(['']);

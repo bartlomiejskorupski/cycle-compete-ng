@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DummyService } from 'src/app/service/dummy.service';
 
 @Component({
   selector: 'app-starting',
@@ -9,11 +8,9 @@ import { DummyService } from 'src/app/service/dummy.service';
 export class StartingComponent {
 
   constructor(
-    private dummy: DummyService
+    
   ) {}
 
-  knook() {
-    this.dummy.getKnook();
-  }
+
 
 }

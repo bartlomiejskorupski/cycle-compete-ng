@@ -10,8 +10,8 @@ import { RegisterRequest } from "./model/register-request.model";
 export class AuthService {
   private readonly url: string;
 
-  private authenticatedSub = new BehaviorSubject<boolean>(false);
-  authenticated$ = this.authenticatedSub.asObservable();
+  private authenticatedSub: BehaviorSubject<boolean>;
+  authenticated$: Observable<boolean>;
 
   private set token(value: string) {
     localStorage.setItem('token', value);
@@ -25,6 +25,10 @@ export class AuthService {
     private http: HttpClient
   ) {
     this.url = environment.backendUrl + '/auth';
+
+    const initialState = !!this.token;
+    this.authenticatedSub = new BehaviorSubject<boolean>(initialState);
+    this.authenticated$ = this.authenticatedSub.asObservable();
   }
 
   login(loginData: AuthRequest): Observable<string> {
