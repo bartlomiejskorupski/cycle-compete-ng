@@ -12,12 +12,7 @@
           "/manifest.webmanifest",
           "/*.css",
           "/*.js",
-          "/*.svg",
-          "/*.ttf",
-          "/*.woff",
-          "/*.woff2",
-          "/*.eot",
-          "/*.json"
+          "/*.(svg|ttf|woff|woff2|eot)"
         ]
       }
     },
