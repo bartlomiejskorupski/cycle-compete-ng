@@ -20,6 +20,7 @@ import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password'
 import { PasswordsMatchDirective } from './shared/directive/passwords-match.directive';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { MapComponent } from './home/map/map.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     PageNotFoundComponent,
     StartingComponent,
     RegisterComponent,
-    PasswordsMatchDirective
+    PasswordsMatchDirective,
+    MapComponent
   ],
   imports: [
     BrowserModule,
