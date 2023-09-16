@@ -1,3 +1,21 @@
 #map {
+  font-family: var(--font-family);
   height: 100%;
+}
+
+.geolocation-container {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 10%;
+}
+
+:host ::ng-deep {
+  .geolocation {
+    padding: 1.5rem;
+  }
+
+  .geolocation > .p-button-icon {
+    font-size: 1.5rem;
+  }
 }
