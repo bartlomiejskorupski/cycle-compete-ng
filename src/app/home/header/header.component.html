@@ -1,9 +1,25 @@
 <header class="w-full surface-card flex">
   <div class="flex-1 flex align-items-center">
-    <i class="pi pi-bars text-4xl px-3"></i>
+    <p-button styleClass="p-button-text p-button-lg"
+      icon="pi pi-bars" (onClick)="sidebarVisible = true">
+    </p-button>
   </div>
   <div class="flex-none py-3 text-xl font-bold text-primary">CycleCompete</div>
   <div class="flex-1 flex justify-content-end align-items-center">
     <button class="font-bold mr-2" pButton label="Logout" (click)="logout()"></button>
   </div>
 </header>
+<p-sidebar [(visible)]="sidebarVisible"
+  styleClass="w-6" position="left">
+  <ng-template pTemplate="header">
+    <div class="w-full font-bold">Menu</div>
+  </ng-template>
+  <ng-template pTemplate="body">
+    <div class="nav-container">
+      <p-menu [model]="navItems"></p-menu>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    
+  </ng-template>
+</p-sidebar>

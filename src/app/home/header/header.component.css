@@ -1,0 +1,8 @@
+
+:host .nav-container ::ng-deep .p-menu {
+  width: 100%;
+}
+
+:host .nav-container ::ng-deep .p-menuitem-link-active {
+  background-color: var(--surface-border);
+}

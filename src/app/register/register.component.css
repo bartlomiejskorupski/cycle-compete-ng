@@ -12,3 +12,14 @@
     border-color: rgb(164, 37, 37);
   }
 }
+
+:host ::ng-deep .password-container {  
+  .p-password-input {
+    background-color: var(--surface-overlay);
+    width: 100%;
+  }
+
+  .ng-invalid.ng-touched > .p-password > .p-password-input {
+    border-color: rgb(164, 37, 37);
+  }
+}

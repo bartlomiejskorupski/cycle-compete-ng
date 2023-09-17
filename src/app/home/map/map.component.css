@@ -17,3 +17,19 @@
     font-size: 1.5rem;
   }
 }
+
+:host ::ng-deep .geolocation-container {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 10%;
+
+  .geolocation {
+    padding: 1.5rem;
+  }
+
+  .geolocation > .p-button-icon {
+    font-size: 1.5rem;
+  }
+}
+
