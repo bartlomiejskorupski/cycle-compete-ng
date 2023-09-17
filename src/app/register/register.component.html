@@ -41,7 +41,7 @@
       </div>
       <div class="col-12 grid grid-nogutter"
          ngModelGroup="passwords" appPasswordsMatch #pwdGrp="ngModelGroup">
-        <div class="col-12 field p-float-label mt-2">
+        <div class="col-12 field p-float-label mt-2 password-container">
           <p-password id="password" name="password" styleClass="w-full"
             [feedback]="false" [toggleMask]="true"
             autocomplete="new-password"
@@ -50,7 +50,7 @@
           <label class="text-color-secondary" for="password">Password</label>
           <small class="p-error" [hidden]="!password.errors?.minlength || !password.touched">Password is too short</small>
         </div>
-        <div class="col-12 field p-float-label mt-2 mb-1">
+        <div class="col-12 field p-float-label mt-2 mb-1 password-container">
           <p-password id="passwordRepeat" name="passwordRepeat" styleClass="w-full"
             [feedback]="false" [toggleMask]="true"
             autocomplete="new-password"

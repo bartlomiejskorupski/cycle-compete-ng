@@ -3,19 +3,17 @@
   height: 100%;
 }
 
-.geolocation-container {
+:host .geolocation-container {
   position: absolute;
   z-index: 1;
   right: 0;
   bottom: 10%;
-}
 
-:host ::ng-deep {
-  .geolocation {
+  ::ng-deep .geolocation {
     padding: 1.5rem;
   }
 
-  .geolocation > .p-button-icon {
+  ::ng-deep .geolocation > .p-button-icon {
     font-size: 1.5rem;
   }
 }
