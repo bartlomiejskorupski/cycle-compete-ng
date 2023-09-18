@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as L from 'leaflet';
 
 @Component({
@@ -6,7 +6,7 @@ import * as L from 'leaflet';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, AfterViewInit{
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
 
   @ViewChild('map') mapEl: ElementRef;
   private map: L.Map;
@@ -14,10 +14,20 @@ export class MapComponent implements OnInit, AfterViewInit{
   private geoLocCircle: L.Circle;
   private geoLocMarker: L.Marker;
 
+  private watchId: number = null;
+  private lastLatLon: L.LatLng = null;
+
   constructor() {}
 
   ngOnInit(): void {
     
+  }
+
+  ngOnDestroy(): void {
+    if(this.watchId) {
+      console.log('Geolocation WatchId cleared');
+      navigator.geolocation.clearWatch(this.watchId);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -36,31 +46,44 @@ export class MapComponent implements OnInit, AfterViewInit{
 
     L.Icon.Default.imagePath = 'assets/map/';
 
-    this.geoLocCircle = L.circle([0, 0], 0);
-    this.geoLocMarker = L.marker([0, 0]);
+    this.geoLocCircle = L.circle([0, 0], 0).bindPopup('').addTo(this.map);
+    this.geoLocMarker = L.marker([0, 0]).addTo(this.map);
 
   }
 
   geolocationClick(): void {
-    navigator.geolocation.getCurrentPosition(
+    if(this.lastLatLon) {
+      this.map.setView(this.lastLatLon, 18);
+    }
+    if(this.watchId) {
+      return;
+    }
+    console.log('Geolocation WatchId set');
+    this.watchId = navigator.geolocation.watchPosition(
       this.geolocationSuccess, 
       this.geolocationError,
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 3000 }
     );
   }
 
   geolocationSuccess = (pos: GeolocationPosition): void => {
-    console.log('Geolocation success.', pos.coords);
-    const latLon = new L.LatLng(pos.coords.latitude, pos.coords.longitude);
-    this.map.setView(latLon, 13);
-    this.geoLocCircle.removeFrom(this.map).setLatLng(latLon).setRadius(pos.coords.accuracy).addTo(this.map);
-    this.geoLocMarker.removeFrom(this.map).setLatLng(latLon).addTo(this.map);
+    const { latitude, longitude, accuracy } = pos.coords;
+    console.log(`Geolocation reading, Accuracy: ${accuracy.toFixed(2)}m`);
+    
+    const latLon = new L.LatLng(latitude, longitude);
+    if (!this.lastLatLon) {
+      this.map.setView(latLon, 18);
+    }
+    this.lastLatLon = latLon;
+    this.geoLocCircle.setLatLng(latLon).setRadius(pos.coords.accuracy).setPopupContent(`Accuracy: ${accuracy.toFixed(2)}m`);
+    this.geoLocMarker.setLatLng(latLon);
   }
 
   geolocationError = (err: GeolocationPositionError): void => {
     // https://stackoverflow.com/questions/61351331/using-geolocation-getcurrentposition-while-testing-on-local-network#answer-61527822
-    console.error(err);
-    alert('Cannot read geolocation data');
+    console.error('Geolocation error: ', err.code, err.message);
+    // alert('Cannot read geolocation data');
+    this.lastLatLon = null;
     this.geoLocCircle.removeFrom(this.map)
     this.geoLocMarker.removeFrom(this.map)
   }
