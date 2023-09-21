@@ -23,32 +23,36 @@
         <label class="text-color-secondary" for="email">E-mail</label>
         <small class="p-error" [hidden]="!email.errors?.email || !email.touched">Incorrect E-mail</small>
       </div>
-      <div class="col field p-float-label mt-2 mr-1">
+      <div class="col field p-float-label mt-2 mr-1 mb-0">
         <input pInputText type="text" id="firstName" 
           class="p-inputtext surface-overlay w-full"
           name="firstName"
           autocomplete="given-name"
-          ngModel required>
+          ngModel required appValidName>
         <label class="text-color-secondary" for="firstName">First Name</label>
       </div>
-      <div class="col field p-float-label mt-2 ml-1">
+      <div class="col field p-float-label mt-2 ml-1 mb-0">
         <input pInputText type="text" id="lastName" 
           class="p-inputtext surface-overlay w-full"
           name="lastName"
           autocomplete="family-name"
-          ngModel required>
+          ngModel required appValidName>
         <label class="text-color-secondary" for="lastName">Last Name</label>
       </div>
       <div class="col-12 grid grid-nogutter"
          ngModelGroup="passwords" appPasswordsMatch #pwdGrp="ngModelGroup">
-        <div class="col-12 field p-float-label mt-2 password-container">
+        <small class="p-error" [hidden]="!pwd.errors?.appValidPassword.length || !pwd.touched">Password must have at least 8 characters</small>
+        <small class="p-error" [hidden]="!pwd.errors?.appValidPassword.lower || !pwd.touched">Password must contain at least 1 lower case character</small>
+        <small class="p-error" [hidden]="!pwd.errors?.appValidPassword.upper || !pwd.touched">Password must contain at least 1 upper case character</small>
+        <small class="p-error" [hidden]="!pwd.errors?.appValidPassword.number || !pwd.touched">Password must contain at least 1 number</small>
+        <small class="p-error" [hidden]="!pwd.errors?.appValidPassword.special || !pwd.touched">Password must contain at least 1 special character</small> 
+        <div class="col-12 field p-float-label mt-4 password-container">
           <p-password id="password" name="password" styleClass="w-full"
             [feedback]="false" [toggleMask]="true"
             autocomplete="new-password"
-            ngModel required #password="ngModel" minlength="5">
+            ngModel required #pwd="ngModel" appValidPassword>
           </p-password>
           <label class="text-color-secondary" for="password">Password</label>
-          <small class="p-error" [hidden]="!password.errors?.minlength || !password.touched">Password is too short</small>
         </div>
         <div class="col-12 field p-float-label mt-2 mb-1 password-container">
           <p-password id="passwordRepeat" name="passwordRepeat" styleClass="w-full"

@@ -23,6 +23,8 @@ import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password'
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
+import { ValidPasswordDirective } from './shared/directive/valid-password.directive';
+import { ValidNameDirective } from './shared/directive/valid-name.directive';
 
 
 @NgModule({
@@ -36,6 +38,8 @@ import { MenuModule } from 'primeng/menu';
     StartingComponent,
     RegisterComponent,
     PasswordsMatchDirective,
+    ValidPasswordDirective,
+    ValidNameDirective,
     MapComponent
   ],
   imports: [

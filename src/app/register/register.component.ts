@@ -36,7 +36,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     const email = this.registerForm.value.email.trim();
     const firstname = this.registerForm.value.firstName.trim();
     const lastname = this.registerForm.value.lastName.trim();
-    const password = this.registerForm.value.passwords.password.trim();
+    // Don't trim the password, it can contain spaces
+    const password = this.registerForm.value.passwords.password;
 
     this.loading = true;
     this.errorMessage = '';
