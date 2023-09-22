@@ -19,7 +19,7 @@ export class AuthService {
   }
 
   public get user() {
-    return JSON.parse(localStorage.getItem('token'));
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   constructor(

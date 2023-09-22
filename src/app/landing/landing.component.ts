@@ -20,6 +20,7 @@ export class LandingComponent implements OnInit {
       .subscribe({
         next: authenticated => {
           if(authenticated) {
+            console.log('Landing. Already authenticated, routing to /home');
             this.router.navigate(['/home']);
           }
         }

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { Observable, firstValueFrom, take } from "rxjs";
+import { Observable, take } from "rxjs";
 import { AuthService } from "./auth.service";
 
 @Injectable()
@@ -14,6 +14,7 @@ export class AuthGuard implements CanActivate {
       .subscribe({
         next: authenticated => {
           if(!authenticated) {
+            console.log('Auth guard. Not authenticated, routing to landing');
             this.router.navigate(['/']);
           }
         }
