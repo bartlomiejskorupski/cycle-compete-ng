@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { AuthResponse } from '../auth/model/auth-response.model';
 
 @Component({
   selector: 'app-register',
@@ -47,7 +48,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     });
   }
   
-  private handleSuccess = (token: string) => {
+  private handleSuccess = (_: AuthResponse) => {
     this.loading = false;
     this.router.navigate(['/home']);
   }

@@ -13,12 +13,12 @@ export class AuthService {
   private authenticatedSub: BehaviorSubject<boolean>;
   authenticated$: Observable<boolean>;
 
-  private set token(value: string) {
-    localStorage.setItem('token', value);
+  private set user(value: AuthResponse) {
+    localStorage.setItem('user', JSON.stringify(value));
   }
 
-  public get token() {
-    return localStorage.getItem('token');
+  public get user() {
+    return JSON.parse(localStorage.getItem('token'));
   }
 
   constructor(
@@ -26,26 +26,25 @@ export class AuthService {
   ) {
     this.url = environment.backendUrl + '/auth';
 
-    const initialState = !!this.token;
+    const initialState = !!this.user;
     this.authenticatedSub = new BehaviorSubject<boolean>(initialState);
     this.authenticated$ = this.authenticatedSub.asObservable();
   }
 
-  login(loginData: AuthRequest): Observable<string> {
+  login(loginData: AuthRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
       this.url + '/authenticate',
       loginData,
       ).pipe(
         take(1),
         catchError(this.handleError),
-        map(res => res.token),
         tap(this.handleSuccess)
       );
   }
 
-  private handleSuccess = (token: string) => {
-    console.log('Auth success:', token);
-    this.token = token;
+  private handleSuccess = (res: AuthResponse) => {
+    console.log('Auth success.', 'Logged in as: ', res.firstname, res.lastname, res.email);
+    this.user = res;
     this.authenticatedSub.next(true);
   }
 
@@ -66,20 +65,19 @@ export class AuthService {
     this.authenticatedSub.next(false);
   }
 
-  register(registerData: RegisterRequest): Observable<String> {
+  register(registerData: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
       this.url + '/register',
       registerData,
       ).pipe(
         take(1),
         catchError(this.handleError),
-        map(res => res.token),
         tap(this.handleSuccess)
       );
   }
 
   private removeToken() {
-    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
 }
