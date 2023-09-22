@@ -1,10 +1,11 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, catchError, map, take, tap, throwError } from "rxjs";
-import { environment } from "src/environments/environment.development";
+import { environment } from "src/environments/environment";
 import { AuthResponse } from "./model/auth-response.model";
 import { AuthRequest } from "./model/auth-request.model";
 import { RegisterRequest } from "./model/register-request.model";
+import { User } from "./model/user.model";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
   private authenticatedSub: BehaviorSubject<boolean>;
   authenticated$: Observable<boolean>;
 
-  private set user(value: AuthResponse) {
+  private set user(value: User) {
     localStorage.setItem('user', JSON.stringify(value));
   }
 
@@ -31,18 +32,19 @@ export class AuthService {
     this.authenticated$ = this.authenticatedSub.asObservable();
   }
 
-  login(loginData: AuthRequest): Observable<AuthResponse> {
+  login(loginData: AuthRequest): Observable<User> {
     return this.http.post<AuthResponse>(
       this.url + '/authenticate',
       loginData,
       ).pipe(
         take(1),
         catchError(this.handleError),
+        map(res => res as User),
         tap(this.handleSuccess)
       );
   }
 
-  private handleSuccess = (res: AuthResponse) => {
+  private handleSuccess = (res: User) => {
     console.log('Auth success.', 'Logged in as: ', res.firstname, res.lastname, res.email);
     this.user = res;
     this.authenticatedSub.next(true);
@@ -50,7 +52,7 @@ export class AuthService {
 
   private handleError = (error: HttpErrorResponse) => {
     console.log('Handling error:', error.status, error.error);
-    this.removeToken();
+    this.removeUser();
     this.authenticatedSub.next(false);
     switch(error.status) {
       case 0: {
@@ -61,22 +63,23 @@ export class AuthService {
   }
 
   logout() {
-    this.removeToken();
+    this.removeUser();
     this.authenticatedSub.next(false);
   }
 
-  register(registerData: RegisterRequest): Observable<AuthResponse> {
+  register(registerData: RegisterRequest): Observable<User> {
     return this.http.post<AuthResponse>(
       this.url + '/register',
       registerData,
       ).pipe(
         take(1),
         catchError(this.handleError),
+        map(res => res as User),
         tap(this.handleSuccess)
       );
   }
 
-  private removeToken() {
+  private removeUser() {
     localStorage.removeItem('user');
   }
 
