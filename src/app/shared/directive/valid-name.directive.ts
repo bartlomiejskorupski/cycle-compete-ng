@@ -14,7 +14,7 @@ export class ValidNameDirective implements Validator {
   validate(control: AbstractControl): ValidationErrors {
     const name: string = control.value?.trim();
 
-    const isNameValid = /^[a-zA-Z]+$/g.test(name);
+    const isNameValid = /^\p{L}+$/gu.test(name);
 
     return !isNameValid ? { appValidName: true } : null;
   }

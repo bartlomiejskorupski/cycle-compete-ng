@@ -16,8 +16,8 @@ export class ValidPasswordDirective implements Validator {
     //console.log('Password:', password);
     const MIN_LEN = 7, MAX_LEN = Number.POSITIVE_INFINITY;
     const hasGoodLength = password?.length > MIN_LEN && password?.length < MAX_LEN;
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /\p{Ll}/u.test(password);
+    const hasUpperCase = /\p{Lu}/u.test(password);
     const hasNumber = /[0-9]/.test(password);
     const hasSpecial = /[ !"#$%&'()*+,\-./:;<=>?@\[\]^_`{|}~]/.test(password);
 
