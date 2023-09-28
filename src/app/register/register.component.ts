@@ -33,7 +33,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log('Submitted form: ', this.registerForm.value);
+    //console.log('Submitted form: ', this.registerForm.value);
     const email = this.registerForm.value.email.trim();
     const firstname = this.registerForm.value.firstName.trim();
     const lastname = this.registerForm.value.lastName.trim();

@@ -13,6 +13,7 @@ export class HeaderComponent implements OnInit {
   sidebarVisible = false;
 
   navItems: MenuItem[];
+  userMenuItems: MenuItem[];
 
   constructor(
     private router: Router,
@@ -25,9 +26,21 @@ export class HeaderComponent implements OnInit {
       { label: 'Item2', icon: 'pi pi-question-circle', routerLink: '/404' },
       { label: 'Item3', icon: 'pi pi-question-circle', routerLink: '/404' },
     ];
+
+    const user = this.auth.user;
+
+    this.userMenuItems = [
+      {
+        label: `${user.firstname} ${user.lastname}`,
+        items: [
+          { label: 'Settings', icon: 'pi pi-cog' },
+          { label: 'Logout', icon: 'pi pi-sign-out', command: this.logout }
+        ]
+      },
+    ];
   }
 
-  logout() {
+  logout = () => {
     this.auth.logout();
     this.router.navigate(['']);
   }

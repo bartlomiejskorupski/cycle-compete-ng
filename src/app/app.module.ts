@@ -17,14 +17,14 @@ import { AuthGuard } from './auth/auth-guard.service';
 import { RegisterComponent } from './register/register.component'
 import { PasswordsMatchDirective } from './shared/directive/passwords-match.directive';
 import { MapComponent } from './home/map/map.component';
+import { ValidPasswordDirective } from './shared/directive/valid-password.directive';
+import { ValidNameDirective } from './shared/directive/valid-name.directive';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password'
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
-import { ValidPasswordDirective } from './shared/directive/valid-password.directive';
-import { ValidNameDirective } from './shared/directive/valid-name.directive';
 
 
 @NgModule({

@@ -6,7 +6,7 @@
   </div>
   <div class="flex-none py-3 text-xl font-bold text-primary">CycleCompete</div>
   <div class="flex-1 flex justify-content-end align-items-center">
-    <button class="font-bold mr-2" pButton label="Logout" (click)="logout()"></button>
+    <p-button icon="pi pi-user" styleClass="p-button-rounded p-button-text mr-2" (onClick)="userMenu.toggle($event)"></p-button>
   </div>
 </header>
 <p-sidebar [(visible)]="sidebarVisible"
@@ -23,3 +23,4 @@
     
   </ng-template>
 </p-sidebar>
+<p-menu #userMenu [model]="userMenuItems" [popup]="true"></p-menu>
