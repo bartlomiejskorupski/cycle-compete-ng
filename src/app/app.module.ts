@@ -25,6 +25,7 @@ import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password'
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
+import { SettingsComponent } from './home/settings/settings.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { MenuModule } from 'primeng/menu';
     PasswordsMatchDirective,
     ValidPasswordDirective,
     ValidNameDirective,
-    MapComponent
+    MapComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

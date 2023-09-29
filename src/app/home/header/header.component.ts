@@ -33,8 +33,8 @@ export class HeaderComponent implements OnInit {
       {
         label: `${user.firstname} ${user.lastname}`,
         items: [
-          { label: 'Settings', icon: 'pi pi-cog' },
-          { label: 'Logout', icon: 'pi pi-sign-out', command: this.logout }
+          { label: 'Ustawienia', icon: 'pi pi-cog', routerLink: '/settings' },
+          { label: 'Wyloguj', icon: 'pi pi-sign-out', command: this.logout }
         ]
       },
     ];
