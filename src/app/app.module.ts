@@ -19,14 +19,14 @@ import { PasswordsMatchDirective } from './shared/directive/passwords-match.dire
 import { MapComponent } from './home/map/map.component';
 import { ValidPasswordDirective } from './shared/directive/valid-password.directive';
 import { ValidNameDirective } from './shared/directive/valid-name.directive';
+import { SettingsComponent } from './home/settings/settings.component';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password'
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
-import { SettingsComponent } from './home/settings/settings.component';
-
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -55,6 +55,7 @@ import { SettingsComponent } from './home/settings/settings.component';
     PasswordModule,
     SidebarModule,
     MenuModule,
+    DialogModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable

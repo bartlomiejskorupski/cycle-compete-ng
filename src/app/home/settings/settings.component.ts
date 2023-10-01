@@ -14,6 +14,8 @@ export class SettingsComponent implements OnInit {
 
   user: User;
 
+  deleteDialogVisible = false;
+
   constructor(
     private auth: AuthService
   ) {}
@@ -22,6 +24,19 @@ export class SettingsComponent implements OnInit {
     this.appVersion = environment.version;
 
     this.user = this.auth.user;
+  }
+
+  deleteAccountClick() {
+    this.deleteDialogVisible = true;
+  }
+
+  deleteAccountDeclineClick() {
+    this.deleteDialogVisible = false;
+  }
+
+  deleteAccountConfirmClick() {
+    this.deleteDialogVisible = false;
+    // TODO
   }
 
 }
