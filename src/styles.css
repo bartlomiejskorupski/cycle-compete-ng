@@ -16,3 +16,33 @@ p {
 .min-h-screen-dynamic {
   min-height: 100dvh;
 }
+
+.p-button.custom-button-danger {
+  color: var(--surface-0);
+  background: var(--red-500);
+  border: 1px solid var(--red-500);
+}
+
+.p-button.custom-button-danger:hover {
+  background: var(--red-600) !important;
+  border: 1px solid var(--red-600) !important;
+}
+
+.p-button.custom-button-danger:focus {
+  box-shadow: 0 0 0 1px var(--red-400);
+}
+
+.p-button.custom-button-info {
+  color: var(--surface-0);
+  background: var(--blue-500);
+  border: 1px solid var(--blue-500);
+}
+
+.p-button.custom-button-info:hover {
+  background: var(--blue-600) !important;
+  border: 1px solid var(--blue-600) !important;
+}
+
+.p-button.custom-button-info:focus {
+  box-shadow: 0 0 0 1px var(--blue-400);
+}

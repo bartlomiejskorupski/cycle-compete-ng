@@ -6,8 +6,30 @@
       <p-button icon="pi pi-arrow-left" styleClass="p-button-text p-button-lg text-sm py-3 px-4 m-1" routerLink="/home"></p-button>
     </div>
   </div>
-  <div class="flex-grow-1 border-round m-2 p-2">
-     
+  <div class="flex-grow-1 m-2 p-2">
+    <div class="mb-2 surface-card border-round grid grid-nogutter border-1 border-primary font-bold text-800">
+      <div class="col-12 text-lg text-center text-primary border-bottom-1 line-height-4">
+        User info
+      </div>
+      <div class="col-12 grid grid-nogutter text-center line-height-4">
+        <div class="col-12 grid grid-nogutter">
+          <div class="col-fixed border-right-1 border-primary" style="width: 90px">First name</div>
+          <div class="col overflow-x-auto white-space-nowrap">{{ user.firstname }}</div>
+        </div>
+        <div class="col-12 grid grid-nogutter">
+          <div class="col-fixed border-right-1 border-primary" style="width: 90px">Last name</div>
+          <div class="col overflow-x-auto white-space-nowrap">{{ user.lastname }}</div>
+        </div>
+        <div class="col-12 grid grid-nogutter flex-nowrap">
+          <div class="col-fixed border-right-1 border-primary" style="width: 90px">E-mail</div>
+          <div class="col overflow-x-auto white-space-nowrap">{{ user.email }}</div>
+        </div>
+      </div>
+    </div>
+    <p-button icon="pi pi-user-edit" label="Edit profile info" styleClass="w-full font-bold mb-2"></p-button>
+    <p-button icon="pi pi-lock" label="Change password" styleClass="custom-button-info w-full font-bold mb-2"></p-button>
+    <p-button icon="pi pi-trash" label="Delete account" styleClass="custom-button-danger w-full font-bold mb-2"></p-button>
+
   </div>
   <footer class="flex-none px-1 py-3 text-sm text-200 m-1">
     <p>Version {{ appVersion }}</p>

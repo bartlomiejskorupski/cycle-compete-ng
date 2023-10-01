@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/auth.service';
+import { User } from 'src/app/auth/model/user.model';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -10,10 +12,16 @@ export class SettingsComponent implements OnInit {
 
   appVersion: string;
 
-  constructor() {}
+  user: User;
+
+  constructor(
+    private auth: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.appVersion = environment.version;
+
+    this.user = this.auth.user;
   }
 
 }
