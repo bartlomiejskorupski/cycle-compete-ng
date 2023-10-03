@@ -1,4 +1,4 @@
-.ng-invalid.ng-touched {
+.ng-invalid.ng-touched.ng-dirty {
   border-color: rgb(164, 37, 37);
 }
 
@@ -8,7 +8,7 @@
     width: 100%;
   }
 
-  ::ng-deep .ng-invalid.ng-touched > .p-password > .p-password-input {
+  ::ng-deep .ng-invalid.ng-touched.ng-dirty > .p-password > .p-password-input {
     border-color: rgb(164, 37, 37);
   }
 }
@@ -19,7 +19,7 @@
     width: 100%;
   }
 
-  .ng-invalid.ng-touched > .p-password > .p-password-input {
+  .ng-invalid.ng-touched.ng-dirty > .p-password > .p-password-input {
     border-color: rgb(164, 37, 37);
   }
 }

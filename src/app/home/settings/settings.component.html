@@ -31,7 +31,7 @@
         <span class="mx-2 text-sm font-bold">Edit profile info</span>
       </div>
       <div class="col-fixed w-3rem">
-        <p-button icon="pi pi-user-edit" styleClass="w-full"></p-button>
+        <p-button icon="pi pi-user-edit" styleClass="w-full" (onClick)="editProfileClick()"></p-button>
       </div>
     </div>
     <div class="grid grid-nogutter pt-1 mt-1 border-top-1 surface-border">
@@ -39,7 +39,7 @@
         <span class="mx-2 text-sm font-bold">Change password</span>
       </div>
       <div class="col-fixed w-3rem">
-        <p-button icon="pi pi-lock" styleClass="custom-button-info w-full"></p-button>
+        <p-button icon="pi pi-lock" styleClass="custom-button-info w-full" (onClick)="changePasswordClick()"></p-button>
       </div>
     </div>
     <div class="grid grid-nogutter pt-1 mt-1 border-top-1 surface-border">
@@ -69,5 +69,85 @@
   <ng-template pTemplate="footer">
     <p-button icon="pi pi-times" label="No" styleClass="p-button-secondary font-bold" (onClick)="deleteAccountDeclineClick()"></p-button>
     <p-button icon="pi pi-check" label="Yes" styleClass="custom-button-danger font-bold" (onClick)="deleteAccountConfirmClick()"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Edit profile info" [(visible)]="editDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true" styleClass="w-full">
+  <ng-template pTemplate="header">
+    <div class="text-xl">
+      <i class="pi pi-user-edit mr-2 text-xl"></i>
+      <span class="font-bold">Edit profile info</span>
+    </div>
+  </ng-template>
+  <form #editDialogForm="ngForm" class="pt-4">
+    <div class="p-float-label mb-4">
+      <input pInputText type="text" id="firstName" 
+        class="p-inputtext surface-overlay w-full"
+        name="firstName"
+        autocomplete="given-name"
+        ngModel required appValidName>
+      <label class="text-color-secondary" for="firstName">First Name</label>
+    </div>
+    <div class="p-float-label mt-2">
+      <input pInputText type="text" id="lastName" 
+        class="p-inputtext surface-overlay w-full"
+        name="lastName"
+        autocomplete="family-name"
+        ngModel required appValidName>
+      <label class="text-color-secondary" for="lastName">Last Name</label>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-times" label="Cancel" styleClass="p-button-secondary font-bold" (onClick)="editProfileCancelClick()"></p-button>
+    <p-button icon="pi pi-save" label="Save" styleClass="custom-button-success font-bold" (onClick)="editProfileSaveClick()" [disabled]="editDialogForm.invalid"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Change password" [(visible)]="pwdDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true" styleClass="w-full">
+  <ng-template pTemplate="header">
+    <div class="text-xl">
+      <i class="pi pi-lock mr-2 text-xl"></i>
+      <span class="font-bold">Change password</span>
+    </div>
+  </ng-template>
+  <form #pwdDialogForm="ngForm" class="">
+    <div class="p-float-label mt-4 password-container">
+      <p-password id="currentPassword" name="currentPassword" styleClass="w-full"
+        [feedback]="false" [toggleMask]="true"
+        autocomplete="current-password"
+        ngModel required #currentPwd="ngModel">
+      </p-password>
+      <label class="text-color-secondary" for="currentPassword">Current Password</label>
+    </div>
+    <div class="" ngModelGroup="passwords" appPasswordsMatch #pwdGrp="ngModelGroup">
+      <div class="flex flex-column text-sm">
+        <small class="p-error" [hidden]="!(pwd.errors?.appValidPassword.length && pwd.touched && pwd.dirty)">Password must have at least 8 characters</small>
+        <small class="p-error" [hidden]="!(pwd.errors?.appValidPassword.lower && pwd.touched && pwd.dirty)">Password must contain at least 1 lower case character</small>
+        <small class="p-error" [hidden]="!(pwd.errors?.appValidPassword.upper && pwd.touched && pwd.dirty)">Password must contain at least 1 upper case character</small>
+        <small class="p-error" [hidden]="!(pwd.errors?.appValidPassword.number && pwd.touched && pwd.dirty)">Password must contain at least 1 number</small>
+        <small class="p-error" [hidden]="!(pwd.errors?.appValidPassword.special && pwd.touched && pwd.dirty)">Password must contain at least 1 special character</small> 
+      </div>
+      <div class="p-float-label mt-4 password-container">
+        <p-password id="password" name="password" styleClass="w-full"
+          [feedback]="false" [toggleMask]="true"
+          autocomplete="new-password"
+          ngModel required #pwd="ngModel" appValidPassword>
+        </p-password>
+        <label class="text-color-secondary" for="password">New Password</label>
+      </div>
+      <div class="p-float-label mt-4 password-container">
+        <p-password id="passwordRepeat" name="passwordRepeat" styleClass="w-full"
+          [feedback]="false" [toggleMask]="true"
+          autocomplete="new-password"
+          ngModel required #rptPwd="ngModel">
+        </p-password>
+        <label class="text-color-secondary" for="passwordRepeat">Repeat New Password</label>
+      </div>
+      <small class="p-error" [hidden]="!(pwdGrp.errors?.appPasswordsMatch && rptPwd.touched && rptPwd.dirty)">Passwords must match.</small>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-times" label="Cancel" styleClass="p-button-secondary font-bold" (onClick)="changePasswordCancelClick()"></p-button>
+    <p-button icon="pi pi-save" label="Save" styleClass="custom-button-success font-bold" (onClick)="changePasswordSaveClick()" [disabled]="pwdDialogForm.invalid"></p-button>
   </ng-template>
 </p-dialog>

@@ -1,0 +1,25 @@
+.ng-invalid.ng-touched.ng-dirty {
+  border-color: rgb(164, 37, 37);
+}
+
+:host .password-container {  
+  ::ng-deep .p-password-input {
+    background-color: var(--surface-overlay);
+    width: 100%;
+  }
+
+  ::ng-deep .ng-invalid.ng-touched.ng-dirty > .p-password > .p-password-input {
+    border-color: rgb(164, 37, 37);
+  }
+}
+
+:host ::ng-deep .password-container {  
+  .p-password-input {
+    background-color: var(--surface-overlay);
+    width: 100%;
+  }
+
+  .ng-invalid.ng-touched.ng-dirty > .p-password > .p-password-input {
+    border-color: rgb(164, 37, 37);
+  }
+}

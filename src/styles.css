@@ -32,6 +32,22 @@ p {
   box-shadow: 0 0 0 1px var(--red-400);
 }
 
+.p-button.custom-button-success {
+  color: var(--surface-0);
+  background: var(--green-500);
+  border: 1px solid var(--green-500);
+}
+
+.p-button.custom-button-success:hover {
+  background: var(--green-600) !important;
+  border: 1px solid var(--green-600) !important;
+}
+
+.p-button.custom-button-success:focus {
+  box-shadow: 0 0 0 1px var(--green-400);
+}
+
+
 .p-button.custom-button-info {
   color: var(--surface-0);
   background: var(--blue-500);

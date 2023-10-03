@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User } from 'src/app/auth/model/user.model';
 import { environment } from 'src/environments/environment';
@@ -14,7 +15,12 @@ export class SettingsComponent implements OnInit {
 
   user: User;
 
+  @ViewChild('editDialogForm') editDialogForm: NgForm;
+  @ViewChild('pwdDialogForm') pwdDialogForm: NgForm;
+
   deleteDialogVisible = false;
+  editDialogVisible = false;
+  pwdDialogVisible = true;
 
   constructor(
     private auth: AuthService
@@ -26,6 +32,41 @@ export class SettingsComponent implements OnInit {
     this.user = this.auth.user;
   }
 
+  editProfileClick() {
+    this.editDialogVisible = true;
+    this.editDialogForm.setValue({
+      firstName: this.user.firstname,
+      lastName: this.user.lastname
+    });
+  }
+
+  editProfileCancelClick() {
+    this.editDialogVisible = false;
+  }
+
+  editProfileSaveClick() {
+    const firstname = this.editDialogForm.value.firstName;
+    const lastname = this.editDialogForm.value.lastName;
+    console.log('Edit profile:', firstname, lastname);
+
+    this.editDialogVisible = false;
+    // TODO
+    //this.service.editProfile({ firstname, lastname }).subscribe({});
+  }
+
+  changePasswordClick() {
+    this.pwdDialogVisible = true;
+    this.pwdDialogForm.reset();
+  }
+
+  changePasswordSaveClick() {
+    this.pwdDialogVisible = false;
+  }
+
+  changePasswordCancelClick() {
+    this.pwdDialogVisible = false;
+  }
+
   deleteAccountClick() {
     this.deleteDialogVisible = true;
   }
@@ -35,8 +76,8 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteAccountConfirmClick() {
-    this.deleteDialogVisible = false;
     // TODO
+    this.deleteDialogVisible = false;
   }
 
 }
