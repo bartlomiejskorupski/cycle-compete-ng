@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import * as L from 'leaflet';
+import { MapService } from 'src/app/shared/service/map.service';
 
 @Component({
   selector: 'app-map',
@@ -8,7 +9,7 @@ import * as L from 'leaflet';
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
 
-  @ViewChild('map') mapEl: ElementRef;
+  @ViewChild('map') mapEl: ElementRef<HTMLDivElement>;
   private map: L.Map;
 
   private geoLocCircle: L.Circle;
@@ -17,7 +18,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
   private watchId: number = null;
   private lastLatLon: L.LatLng = null;
 
-  constructor() {}
+  geolocationLoading = false;
+
+  constructor(
+    private mapService: MapService
+  ) {}
 
   ngOnInit(): void {
     
@@ -35,20 +40,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   private initMap(): void {
-    this.map = L.map(this.mapEl.nativeElement).setView([54.370978, 18.612741], 13).setZoom(18);
-    
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(this.map);
-
-    L.control.scale().addTo(this.map);
-
-    L.Icon.Default.imagePath = 'assets/map/';
+    this.map = this.mapService.createMap(this.mapEl.nativeElement);
 
     this.geoLocCircle = L.circle([0, 0], 0).bindPopup('').addTo(this.map);
     this.geoLocMarker = L.marker([0, 0]).addTo(this.map);
-
   }
 
   geolocationClick(): void {
@@ -58,12 +53,13 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
     if(this.watchId) {
       return;
     }
-    console.log('Geolocation WatchId set');
+    this.geolocationLoading = true;
     this.watchId = navigator.geolocation.watchPosition(
       this.geolocationSuccess, 
       this.geolocationError,
       { enableHighAccuracy: true, timeout: 3000 }
     );
+    console.log('Geolocation WatchId set');
   }
 
   geolocationSuccess = (pos: GeolocationPosition): void => {
@@ -77,6 +73,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
     this.lastLatLon = latLon;
     this.geoLocCircle.setLatLng(latLon).setRadius(pos.coords.accuracy).setPopupContent(`Accuracy: ${accuracy.toFixed(2)}m`);
     this.geoLocMarker.setLatLng(latLon);
+    this.geolocationLoading = false;
   }
 
   geolocationError = (err: GeolocationPositionError): void => {
@@ -86,6 +83,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
     this.lastLatLon = null;
     this.geoLocCircle.removeFrom(this.map)
     this.geoLocMarker.removeFrom(this.map)
+    this.geolocationLoading = false;
   }
 
 }

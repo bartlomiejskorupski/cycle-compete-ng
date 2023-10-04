@@ -1,6 +1,8 @@
 <div class="h-full relative">
   <div class="geolocation-container">
-    <p-button icon="pi pi-map-marker" (onClick)="geolocationClick()"
+    <p-button 
+      [icon]="geolocationLoading ? 'pi pi-spinner pi-spin' : 'pi pi-map-marker'"
+      (onClick)="geolocationClick()"
       styleClass="geolocation p-button-rounded p-button-raised mr-2">
     </p-button>
   </div>
