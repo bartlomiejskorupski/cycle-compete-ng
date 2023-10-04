@@ -1,1 +1,13 @@
 <router-outlet></router-outlet>
+
+<div *ngIf="updatePopupVisible" class="fixed z-1 w-screen bottom-0 flex justify-content-center">
+  <div class="flex align-items-center surface-50 p-1 border-round border-1 border-100 fadeindown">
+    <div class="mr-2">
+      <p-button icon="pi pi-times" (onClick)="updatePopupVisible=false" styleClass="p-button-text p-button-secondary" ></p-button>
+    </div>
+    <div class="font-bold text-900 text-sm mr-2">New version available!</div>
+    <div class="mr-2">
+      <p-button label="Update" (onClick)="updateClick()" styleClass="p-button-raised custom-button-success px-2 py-1 font-bold text-sm"></p-button>
+    </div>
+  </div>
+</div>

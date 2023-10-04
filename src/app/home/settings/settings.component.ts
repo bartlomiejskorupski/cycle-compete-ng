@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit {
 
   deleteDialogVisible = false;
   editDialogVisible = false;
-  pwdDialogVisible = true;
+  pwdDialogVisible = false;
 
   constructor(
     private auth: AuthService
