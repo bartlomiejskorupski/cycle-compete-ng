@@ -1,20 +1,20 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, catchError, map, take, tap, throwError } from "rxjs";
-import { environment } from "src/environments/environment";
+import { BehaviorSubject, Observable, catchError, map, tap, throwError } from "rxjs";
 import { AuthResponse } from "./model/auth-response.model";
 import { AuthRequest } from "./model/auth-request.model";
 import { RegisterRequest } from "./model/register-request.model";
 import { User } from "./model/user.model";
+import { BaseHttpService } from "../shared/service/base-http.service";
 
 @Injectable({providedIn: 'root'})
-export class AuthService {
-  private readonly url: string;
+export class AuthService extends BaseHttpService{
+  readonly BASE_ENDPOINT: string;
 
   private authenticatedSub: BehaviorSubject<boolean>;
   authenticated$: Observable<boolean>;
 
-  private set user(value: User) {
+  public set user(value: User) {
     localStorage.setItem('user', JSON.stringify(value));
   }
 
@@ -23,9 +23,10 @@ export class AuthService {
   }
 
   constructor(
-    private http: HttpClient
+    http: HttpClient
   ) {
-    this.url = environment.backendUrl + '/auth';
+    super(http);
+    this.BASE_ENDPOINT = '/auth';
 
     const initialState = !!this.user;
     this.authenticatedSub = new BehaviorSubject<boolean>(initialState);
@@ -33,11 +34,8 @@ export class AuthService {
   }
 
   login(loginData: AuthRequest): Observable<User> {
-    return this.http.post<AuthResponse>(
-      this.url + '/authenticate',
-      loginData,
-      ).pipe(
-        take(1),
+    return this.postEndpoint<AuthResponse>(loginData, '/authenticate')
+      .pipe(
         catchError(this.handleError),
         map(res => res as User),
         tap(this.handleSuccess)
@@ -50,16 +48,11 @@ export class AuthService {
     this.authenticatedSub.next(true);
   }
 
-  private handleError = (error: HttpErrorResponse) => {
-    console.log('Handling error:', error.status, error.error);
+  private handleError = (error: Error) => {
+    console.log('Auth error:', error.message);
     this.removeUser();
     this.authenticatedSub.next(false);
-    switch(error.status) {
-      case 0: {
-        return throwError(() => new Error('Something went wrong'));
-      }
-    }
-    return throwError(() => new Error(error.error));
+    return throwError(() => new Error(error.message));
   }
 
   logout() {
@@ -68,11 +61,8 @@ export class AuthService {
   }
 
   register(registerData: RegisterRequest): Observable<User> {
-    return this.http.post<AuthResponse>(
-      this.url + '/register',
-      registerData,
-      ).pipe(
-        take(1),
+    return this.postEndpoint<AuthResponse>(registerData ,'/register')
+      .pipe(
         catchError(this.handleError),
         map(res => res as User),
         tap(this.handleSuccess)

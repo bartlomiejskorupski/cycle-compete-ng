@@ -1,7 +1,7 @@
 import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
@@ -27,6 +27,7 @@ import { PasswordModule } from 'primeng/password'
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
 import { DialogModule } from 'primeng/dialog';
+import { AuthInterceptor } from './auth/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,14 @@ import { DialogModule } from 'primeng/dialog';
       registrationStrategy: 'registerWhenStable:30000'
     }),
   ],
-  providers: [AuthGuard],
+  providers: [
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
