@@ -5,15 +5,17 @@ import { EditUserRequest } from "./model/edit-user-request.model";
 import { Observable } from "rxjs";
 import { EditUserResponse } from "./model/edit-user-response.model";
 import { EditUserPasswordRequest } from "./model/edit-user-password-request.model";
+import { UserDataService } from "../user-data.service";
 
 @Injectable({ providedIn: 'root' })
 export class UserService extends BaseHttpService {
   readonly BASE_ENDPOINT: string;
 
   constructor(
-    http: HttpClient
+    http: HttpClient,
+    userData: UserDataService
   ) {
-    super(http);
+    super(http, userData);
     this.BASE_ENDPOINT = '/user';
   }
 

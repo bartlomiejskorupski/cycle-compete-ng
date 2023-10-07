@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../../auth/auth.service';
 import { MenuItem } from 'primeng/api';
+import { UserDataService } from 'src/app/shared/service/user-data.service';
 
 @Component({
   selector: 'app-header',
@@ -16,8 +15,7 @@ export class HeaderComponent implements OnInit {
   userMenuItems: MenuItem[];
 
   constructor(
-    private router: Router,
-    private auth: AuthService
+    private userData: UserDataService
   ) {}
 
   ngOnInit(): void {
@@ -27,7 +25,7 @@ export class HeaderComponent implements OnInit {
       { label: 'Item3', icon: 'pi pi-question-circle', routerLink: '/404' },
     ];
 
-    const user = this.auth.user;
+    const user = this.userData.user;
 
     this.userMenuItems = [
       {
@@ -41,8 +39,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout = () => {
-    this.auth.logout();
-    this.router.navigate(['']);
+    this.userData.removeUser();
   }
 
 }

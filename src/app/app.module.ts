@@ -20,6 +20,7 @@ import { MapComponent } from './home/map/map.component';
 import { ValidPasswordDirective } from './shared/directive/valid-password.directive';
 import { ValidNameDirective } from './shared/directive/valid-name.directive';
 import { SettingsComponent } from './home/settings/settings.component';
+import { AuthInterceptor } from './auth/auth-interceptor.service';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -27,7 +28,8 @@ import { PasswordModule } from 'primeng/password'
 import { SidebarModule } from 'primeng/sidebar';
 import { MenuModule } from 'primeng/menu';
 import { DialogModule } from 'primeng/dialog';
-import { AuthInterceptor } from './auth/auth-interceptor.service';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import { AuthInterceptor } from './auth/auth-interceptor.service';
     SidebarModule,
     MenuModule,
     DialogModule,
+    MessagesModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
@@ -65,6 +68,7 @@ import { AuthInterceptor } from './auth/auth-interceptor.service';
     }),
   ],
   providers: [
+    MessageService,
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,

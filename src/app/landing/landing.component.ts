@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
 import { take } from 'rxjs';
+import { UserDataService } from '../shared/service/user-data.service';
 
 @Component({
   selector: 'app-landing',
@@ -12,11 +12,11 @@ export class LandingComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private auth: AuthService
+    private userData: UserDataService
   ) {}
 
   ngOnInit(): void {
-    this.auth.authenticated$.pipe(take(1))
+    this.userData.authenticated$.pipe(take(1))
       .subscribe({
         next: authenticated => {
           if(authenticated) {

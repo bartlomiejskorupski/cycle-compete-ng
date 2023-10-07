@@ -58,21 +58,7 @@
   </footer>
 </div>
 
-<p-dialog header="Delete account" [(visible)]="deleteDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true">
-  <ng-template pTemplate="header">
-    <div class="text-xl">
-      <i class="pi pi-exclamation-triangle text-red-500 mr-2 text-xl"></i>
-      <span class="font-bold">Delete account</span>
-    </div>
-  </ng-template>
-  <div class="">Are you sure you want to delete your account?</div>
-  <ng-template pTemplate="footer">
-    <p-button icon="pi pi-times" label="No" styleClass="p-button-secondary font-bold" (onClick)="deleteAccountDeclineClick()"></p-button>
-    <p-button icon="pi pi-check" label="Yes" styleClass="custom-button-danger font-bold" (onClick)="deleteAccountConfirmClick()"></p-button>
-  </ng-template>
-</p-dialog>
-
-<p-dialog header="Edit profile info" [(visible)]="editDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true" styleClass="w-full">
+<p-dialog header="Edit profile info" [(visible)]="editDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true" styleClass="w-full" (onHide)="resetForm(editDialogForm)">
   <ng-template pTemplate="header">
     <div class="text-xl">
       <i class="pi pi-user-edit mr-2 text-xl"></i>
@@ -98,12 +84,12 @@
     </div>
   </form>
   <ng-template pTemplate="footer">
-    <p-button icon="pi pi-times" label="Cancel" styleClass="p-button-secondary font-bold" (onClick)="editProfileCancelClick()"></p-button>
-    <p-button icon="pi pi-save" label="Save" styleClass="custom-button-success font-bold" (onClick)="editProfileSaveClick()" [disabled]="editDialogForm.invalid"></p-button>
+    <p-button [disabled]="editDialogLoading" icon="pi pi-times" label="Cancel" styleClass="p-button-secondary font-bold" (onClick)="editProfileCancelClick()"></p-button>
+    <p-button [icon]="editDialogLoading ? 'pi pi-spinner pi-spin' : 'pi pi-save'" label="Save" styleClass="custom-button-success font-bold" (onClick)="editProfileSaveClick()" [disabled]="editDialogForm.invalid || editDialogLoading"></p-button>
   </ng-template>
 </p-dialog>
 
-<p-dialog header="Change password" [(visible)]="pwdDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true" styleClass="w-full">
+<p-dialog header="Change password" [(visible)]="pwdDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true" styleClass="w-full" (onHide)="resetForm(pwdDialogForm)">
   <ng-template pTemplate="header">
     <div class="text-xl">
       <i class="pi pi-lock mr-2 text-xl"></i>
@@ -147,7 +133,21 @@
     </div>
   </form>
   <ng-template pTemplate="footer">
-    <p-button icon="pi pi-times" label="Cancel" styleClass="p-button-secondary font-bold" (onClick)="changePasswordCancelClick()"></p-button>
-    <p-button icon="pi pi-save" label="Save" styleClass="custom-button-success font-bold" (onClick)="changePasswordSaveClick()" [disabled]="pwdDialogForm.invalid"></p-button>
+    <p-button [disabled]="pwdDialogLoading" icon="pi pi-times" label="Cancel" styleClass="p-button-secondary font-bold" (onClick)="changePasswordCancelClick()"></p-button>
+    <p-button [icon]="pwdDialogLoading ? 'pi pi-spinner pi-spin' : 'pi pi-save'" label="Save" styleClass="custom-button-success font-bold" (onClick)="changePasswordSaveClick()" [disabled]="pwdDialogForm.invalid || pwdDialogLoading"></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog header="Delete account" [(visible)]="deleteDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [dismissableMask]="true">
+  <ng-template pTemplate="header">
+    <div class="text-xl">
+      <i class="pi pi-exclamation-triangle text-red-500 mr-2 text-xl"></i>
+      <span class="font-bold">Delete account</span>
+    </div>
+  </ng-template>
+  <div class="">Are you sure you want to delete your account?</div>
+  <ng-template pTemplate="footer">
+    <p-button [disabled]="deleteDialogLoading" icon="pi pi-times" label="No" styleClass="p-button-secondary font-bold" (onClick)="deleteAccountDeclineClick()"></p-button>
+    <p-button [disabled]="deleteDialogLoading" [icon]="deleteDialogLoading ? 'pi pi-spinner pi-spin' : 'pi pi-check'" label="Yes" styleClass="custom-button-danger font-bold" (onClick)="deleteAccountConfirmClick()"></p-button>
   </ng-template>
 </p-dialog>

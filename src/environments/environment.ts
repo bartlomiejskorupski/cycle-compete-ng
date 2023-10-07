@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  version: 'v1.0.7',
+  version: 'v1.0.8',
   backendUrl: 'https://cyclecompete.ddns.net/api/v1',
 };

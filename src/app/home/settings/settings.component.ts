@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
+import { MessageService } from 'primeng/api';
 import { User } from 'src/app/auth/model/user.model';
+import { UserDataService } from 'src/app/shared/service/user-data.service';
 import { UserService } from 'src/app/shared/service/user/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -19,21 +19,27 @@ export class SettingsComponent implements OnInit {
 
   @ViewChild('editDialogForm') editDialogForm: NgForm;
   @ViewChild('pwdDialogForm') pwdDialogForm: NgForm;
+  
+  editDialogVisible = false;
+  editDialogLoading = false;
+
+  pwdDialogVisible = false;
+  pwdDialogLoading = false;
 
   deleteDialogVisible = false;
-  editDialogVisible = false;
-  pwdDialogVisible = false;
+  deleteDialogLoading = false;
+
 
   constructor(
-    private auth: AuthService,
+    private userData: UserDataService,
     private userService: UserService,
-    private router: Router
+    private messages: MessageService
   ) {}
 
   ngOnInit(): void {
     this.appVersion = environment.version;
 
-    this.user = this.auth.user;
+    this.user = this.userData.user;
   }
 
   editProfileClick() {
@@ -52,24 +58,37 @@ export class SettingsComponent implements OnInit {
     const firstname = this.editDialogForm.value.firstName;
     const lastname = this.editDialogForm.value.lastName;
     console.log('Edit profile:', firstname, lastname);
-    // TODO add loading
+    this.editDialogLoading = true;
     this.userService.editInfo({ firstname, lastname }).subscribe({
       next: (res) => {
-        // TODO add success message
         console.log('User info changed.');
-        this.auth.user = {
+
+        this.messages.add({
+          severity: 'success',
+          detail: 'User info changed!',
+          life: 5000
+        });
+        
+        this.userData.user = {
           ...this.user,
           firstname: res.firstname,
           lastname: res.lastname
         }
-        this.user = this.auth.user;
+        this.user = this.userData.user;
         this.editDialogVisible = false;
+        this.editDialogLoading = false;
       },
-      error: _ => {
+      error: (err: Error) => {
         console.log('Error changing user info.');
         
-        // TODO add error message
+        this.messages.add({
+          severity: 'error',
+          detail: err.message,
+          life: 15000
+        });
+        
         this.editDialogVisible = false;
+        this.editDialogLoading = false;
       }
     });
   }
@@ -83,16 +102,30 @@ export class SettingsComponent implements OnInit {
     const oldPassword = this.pwdDialogForm.value.currentPassword;
     const newPassword = this.pwdDialogForm.value.passwords.password;
 
-    console.log(oldPassword, newPassword);
-    
-
+    this.pwdDialogLoading = true;
     this.userService.changePassword({oldPassword, newPassword}).subscribe({
       next: _ => {
         console.log('Password changed.');
+
+        this.messages.add({
+          severity: 'success',
+          detail: 'Password changed!',
+          life: 5000
+        });
+
+        this.pwdDialogLoading = false;
         this.pwdDialogVisible = false;
       },
-      error: _ => {
+      error: (err: Error) => {
         console.log('Error changing password');
+
+        this.messages.add({
+          severity: 'error',
+          detail: err.message,
+          life: 15000
+        });
+
+        this.pwdDialogLoading = false;
         this.pwdDialogVisible = false;
       }
     });
@@ -111,18 +144,38 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteAccountConfirmClick() {
+    this.deleteDialogLoading = true;
     this.userService.deleteAccount().subscribe({
       next: _ => {
         console.log('Account deleted.');
+
+        this.messages.add({
+          severity: 'success',
+          detail: 'Account deleted!',
+          life: 10000
+        });
+
         this.deleteDialogVisible = false;
-        this.auth.logout();
-        this.router.navigate(['']);
+        this.deleteDialogLoading = false;
+        this.userData.removeUser();
       },
-      error: _ => {
+      error: (err: Error) => {
         console.log('Error deleting account');
+
+        this.messages.add({
+          severity: 'error',
+          detail: err.message,
+          life: 15000
+        });
+
         this.deleteDialogVisible = false;
+        this.deleteDialogLoading = false;
       }
     });
+  }
+
+  resetForm(form: NgForm) {
+    form.reset();
   }
 
 }
