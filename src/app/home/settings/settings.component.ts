@@ -5,6 +5,7 @@ import { User } from 'src/app/auth/model/user.model';
 import { UserDataService } from 'src/app/shared/service/user-data.service';
 import { UserService } from 'src/app/shared/service/user/user.service';
 import { environment } from 'src/environments/environment';
+import { SettingsService } from './settings.service';
 
 @Component({
   selector: 'app-settings',
@@ -29,11 +30,19 @@ export class SettingsComponent implements OnInit {
   deleteDialogVisible = false;
   deleteDialogLoading = false;
 
+  get animationsEnabled(): boolean {
+    return this.settings.getAnimationsEnabled();
+  }
+
+  set animationsEnabled(val: boolean) {
+    this.settings.setAnimationsEnabled(val);
+  }
 
   constructor(
     private userData: UserDataService,
     private userService: UserService,
-    private messages: MessageService
+    private messages: MessageService,
+    private settings: SettingsService
   ) {}
 
   ngOnInit(): void {

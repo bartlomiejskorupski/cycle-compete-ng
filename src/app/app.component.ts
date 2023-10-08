@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { slideOver } from './shared/animation/route-animation';
+import { SettingsService } from './home/settings/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private subs: Subscription[] = [];
 
-  constructor() {}
+  constructor(
+    private settings: SettingsService
+  ) {}
 
   ngOnInit(): void {
     console.log('Configuration:', environment.production ? 'Production' : 'Development');
@@ -25,6 +28,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getRouteAnimationData(outlet: RouterOutlet) {
+    if(!this.settings.getAnimationsEnabled()) {
+      return null;
+    }
     return outlet?.activatedRouteData?.['animation'];
   }
 

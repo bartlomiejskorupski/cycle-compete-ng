@@ -50,7 +50,14 @@
         <p-button icon="pi pi-trash" styleClass="custom-button-danger w-full" (onClick)="deleteAccountClick()"></p-button>
       </div>
     </div>
-
+    <div class="grid grid-nogutter pt-1 mt-1 border-top-1 surface-border">
+      <div class="col flex align-items-center">
+        <span class="mx-2 text-sm font-bold">Enable animations</span>
+      </div>
+      <div class="col-fixed w-3rem">
+        <p-inputSwitch [(ngModel)]="animationsEnabled"></p-inputSwitch>
+      </div>
+    </div>
   </div>
   <footer class="flex-none px-1 py-3 text-sm text-200 m-1">
     <p>Version {{ appVersion }}</p>

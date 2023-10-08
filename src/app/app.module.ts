@@ -21,6 +21,7 @@ import { ValidPasswordDirective } from './shared/directive/valid-password.direct
 import { ValidNameDirective } from './shared/directive/valid-name.directive';
 import { SettingsComponent } from './home/settings/settings.component';
 import { AuthInterceptor } from './auth/auth-interceptor.service';
+import { UpdatePopupComponent } from './shared/component/update-popup/update-popup.component';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -30,7 +31,7 @@ import { MenuModule } from 'primeng/menu';
 import { DialogModule } from 'primeng/dialog';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
-import { UpdatePopupComponent } from './shared/component/update-popup/update-popup.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { UpdatePopupComponent } from './shared/component/update-popup/update-pop
     MenuModule,
     DialogModule,
     MessagesModule,
+    InputSwitchModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
