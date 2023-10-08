@@ -30,6 +30,7 @@ import { MenuModule } from 'primeng/menu';
 import { DialogModule } from 'primeng/dialog';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { UpdatePopupComponent } from './shared/component/update-popup/update-popup.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { MessageService } from 'primeng/api';
     ValidPasswordDirective,
     ValidNameDirective,
     MapComponent,
-    SettingsComponent
+    SettingsComponent,
+    UpdatePopupComponent
   ],
   imports: [
     BrowserModule,
