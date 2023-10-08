@@ -2,7 +2,9 @@
   <p-messages></p-messages>
 </div>
 
-<router-outlet></router-outlet>
+<div [@routeAnimation]="getRouteAnimationData(outlet)" class="relative overflow-hidden">
+  <router-outlet #outlet="outlet"></router-outlet>
+</div>
 
 <div *ngIf="updatePopupVisible" class="fixed z-1 w-screen bottom-0 flex justify-content-center">
   <div class="flex align-items-center surface-50 p-1 border-round border-1 border-100 fadeindown">

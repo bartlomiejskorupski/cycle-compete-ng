@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { SwUpdate, VersionEvent } from '@angular/service-worker';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { slideOver } from './shared/animation/route-animation';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  animations: [slideOver]
 })
 export class AppComponent implements OnInit, OnDestroy {
 
@@ -59,6 +62,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   updateClick() {
     location.reload();
+  }
+
+  getRouteAnimationData(outlet: RouterOutlet) {
+    return outlet?.activatedRouteData?.['animation'];
   }
 
 }

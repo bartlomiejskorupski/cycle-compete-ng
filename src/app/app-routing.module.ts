@@ -11,13 +11,11 @@ import { RegisterComponent } from "./register/register.component";
 import { SettingsComponent } from "./home/settings/settings.component";
 
 const routes: Routes = [
-  { path: '', component: LandingComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'home', component: HomeComponent, canActivate: [AuthGuard], children: [
-    { path: '', component: StartingComponent },
-  ]},
-  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: '', component: LandingComponent, data: { animation: 'landing' } },
+  { path: 'login', component: LoginComponent, data: { animation: 'login' } },
+  { path: 'register', component: RegisterComponent, data: { animation: 'login' } },
+  { path: 'home', component: HomeComponent, data: { animation: 'home' }, canActivate: [AuthGuard] },
+  { path: 'settings', component: SettingsComponent, data: { animation: 'settings' }, canActivate: [AuthGuard] },
   { path: 'not-found', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/not-found' }
 ];
