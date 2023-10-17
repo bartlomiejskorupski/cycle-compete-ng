@@ -40,10 +40,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   private initMap(): void {
+    console.log('Map init.');
+    
     this.map = this.mapService.createMap(this.mapEl.nativeElement);
 
-    this.geoLocCircle = L.circle([0, 0], 0).bindPopup('').addTo(this.map);
-    this.geoLocMarker = L.marker([0, 0]).addTo(this.map);
+    this.geoLocCircle = L.circle([0, 0], { radius: 0 }).bindPopup('');
+    this.geoLocMarker = L.marker([0, 0]);
   }
 
   geolocationClick(): void {
@@ -64,25 +66,23 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
 
   geolocationSuccess = (pos: GeolocationPosition): void => {
     const { latitude, longitude, accuracy } = pos.coords;
-    console.log(`Geolocation reading, Accuracy: ${accuracy.toFixed(2)}m`);
-    
     const latLon = new L.LatLng(latitude, longitude);
+    
+    console.log(`Geolocation reading, Accuracy: ${accuracy.toFixed(2)}m`);
     if (!this.lastLatLon) {
       this.map.setView(latLon, 18);
     }
     this.lastLatLon = latLon;
-    this.geoLocCircle.setLatLng(latLon).setRadius(pos.coords.accuracy).setPopupContent(`Accuracy: ${accuracy.toFixed(2)}m`);
+    this.geoLocCircle.setLatLng(latLon).setRadius(accuracy).setPopupContent(`Accuracy: ${accuracy.toFixed(2)}m`);
     this.geoLocMarker.setLatLng(latLon);
+    this.mapService.addLayer(this.map, this.geoLocCircle, this.geoLocMarker);
     this.geolocationLoading = false;
   }
 
   geolocationError = (err: GeolocationPositionError): void => {
     // https://stackoverflow.com/questions/61351331/using-geolocation-getcurrentposition-while-testing-on-local-network#answer-61527822
     console.error('Geolocation error: ', err.code, err.message);
-    // alert('Cannot read geolocation data');
-    this.lastLatLon = null;
-    this.geoLocCircle.removeFrom(this.map)
-    this.geoLocMarker.removeFrom(this.map)
+    // alert(`Geolocation error: ${err.code} ${err.message}`);
     this.geolocationLoading = false;
   }
 

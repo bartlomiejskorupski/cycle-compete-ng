@@ -9,10 +9,10 @@ export class MapService {
     
   }
 
-  createMap(element: HTMLElement): L.Map {
+  createMap(element: string | HTMLElement): L.Map {
     const map = L.map(element).setView([54.370978, 18.612741], 13).setZoom(18);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
@@ -21,6 +21,10 @@ export class MapService {
     L.Icon.Default.imagePath = 'assets/map/';
 
     return map;
+  }
+
+  addLayer(map: L.Map, layer: L.Layer, ...otherLayers: L.Layer[]) {
+    [layer, ...otherLayers].forEach(layer => map.hasLayer(layer) || layer.addTo(map));
   }
 
 }
