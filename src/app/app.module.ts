@@ -32,6 +32,7 @@ import { DialogModule } from 'primeng/dialog';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { TracksComponent } from './home/tracks/tracks.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     ValidNameDirective,
     MapComponent,
     SettingsComponent,
-    UpdatePopupComponent
+    UpdatePopupComponent,
+    TracksComponent
   ],
   imports: [
     BrowserModule,

@@ -21,8 +21,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.navItems = [
       { label: 'Map', icon: 'pi pi-map', routerLink: '/home' },
-      { label: 'Item2', icon: 'pi pi-question-circle', routerLink: '/404' },
-      { label: 'Item3', icon: 'pi pi-question-circle', routerLink: '/404' },
+      { label: 'Tracks', icon: 'pi pi-list', routerLink: '/tracks' },
+      { label: 'New Track', icon: 'pi pi-plus', routerLink: '/404' },
+      { label: 'Something', icon: 'pi pi-question-circle', routerLink: '/404' },
     ];
 
     const user = this.userData.user;
