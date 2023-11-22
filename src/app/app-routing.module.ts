@@ -8,6 +8,11 @@ import { PageNotFoundComponent } from "./page-not-found/page-not-found.component
 import { RegisterComponent } from "./register/register.component";
 import { SettingsComponent } from "./home/settings/settings.component";
 import { TracksComponent } from "./home/tracks/tracks.component";
+import { NewTrackComponent } from "./home/new-track/new-track.component";
+import { NewTrackStartComponent } from "./home/new-track/start/new-track-start.component";
+import { NewTrackRouteComponent } from "./home/new-track/route/new-track-route.component";
+import { NewTrackInfoComponent } from "./home/new-track/info/new-track-info.component";
+import { NewTrackConfirmComponent } from "./home/new-track/confirm/new-track-confirm.component";
 
 const routes: Routes = [
   { path: '', component: LandingComponent, data: { animation: 'landing' } },
@@ -16,6 +21,12 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent, data: { animation: 'home' }, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, data: { animation: 'settings' }, canActivate: [AuthGuard] },
   { path: 'tracks', component: TracksComponent, data: { animation: 'tracks' }, canActivate: [AuthGuard] },
+  { path: 'tracks/new', component: NewTrackComponent, data: { animation: 'new-track' }, canActivate: [AuthGuard], children: [
+    { path: 'start', component: NewTrackStartComponent },
+    { path: 'route', component: NewTrackRouteComponent },
+    { path: 'info', component: NewTrackInfoComponent },
+    { path: 'confirm', component: NewTrackConfirmComponent }
+  ]},
   { path: 'not-found', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/not-found' }
 ];

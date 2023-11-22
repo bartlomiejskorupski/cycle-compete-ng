@@ -22,7 +22,7 @@ export class HeaderComponent implements OnInit {
     this.navItems = [
       { label: 'Map', icon: 'pi pi-map', routerLink: '/home' },
       { label: 'Tracks', icon: 'pi pi-list', routerLink: '/tracks' },
-      { label: 'New Track', icon: 'pi pi-plus', routerLink: '/404' },
+      { label: 'New Track', icon: 'pi pi-plus', routerLink: '/tracks/new/start' },
       { label: 'Something', icon: 'pi pi-question-circle', routerLink: '/404' },
     ];
 

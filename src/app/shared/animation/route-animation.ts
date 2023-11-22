@@ -7,6 +7,8 @@ export const slideOver = trigger('routeAnimation', [
   transition('settings => home', slideOutTo('right')),
   transition('home => tracks', slideOverFrom('left')),
   transition('tracks => home', slideOutTo('left')),
+  transition('home => new-track', slideOverFrom('left')),
+  transition('new-track => home', slideOutTo('left')),
 ]);
 
 function slideOverFrom(direction: 'top' | 'bottom' | 'right' | 'left') {

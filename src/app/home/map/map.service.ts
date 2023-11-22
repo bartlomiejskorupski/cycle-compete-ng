@@ -23,6 +23,11 @@ export class MapService {
     return map;
   }
 
+  createMarker() {
+    const mark = L.marker([0, 0]);
+    return mark;
+  }
+
   addLayer(map: L.Map, layer: L.Layer, ...otherLayers: L.Layer[]) {
     [layer, ...otherLayers].forEach(layer => map.hasLayer(layer) || layer.addTo(map));
   }
