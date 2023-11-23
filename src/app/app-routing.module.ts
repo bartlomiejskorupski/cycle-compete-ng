@@ -22,10 +22,10 @@ const routes: Routes = [
   { path: 'settings', component: SettingsComponent, data: { animation: 'settings' }, canActivate: [AuthGuard] },
   { path: 'tracks', component: TracksComponent, data: { animation: 'tracks' }, canActivate: [AuthGuard] },
   { path: 'tracks/new', component: NewTrackComponent, data: { animation: 'new-track' }, canActivate: [AuthGuard], children: [
-    { path: 'start', component: NewTrackStartComponent },
-    { path: 'route', component: NewTrackRouteComponent },
-    { path: 'info', component: NewTrackInfoComponent },
-    { path: 'confirm', component: NewTrackConfirmComponent }
+    { path: 'start', component: NewTrackStartComponent, data: { stepsIndex: 0 } },
+    { path: 'route', component: NewTrackRouteComponent, data: { stepsIndex: 1 } },
+    { path: 'info', component: NewTrackInfoComponent, data: { stepsIndex: 2 } },
+    { path: 'confirm', component: NewTrackConfirmComponent, data: { stepsIndex: 3 } }
   ]},
   { path: 'not-found', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/not-found' }

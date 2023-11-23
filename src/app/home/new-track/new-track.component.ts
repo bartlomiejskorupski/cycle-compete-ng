@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NewTrackService } from './new-track.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class NewTrackComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private service: NewTrackService
   ) {}
   
@@ -28,7 +29,10 @@ export class NewTrackComponent implements OnInit {
       { label: 'Info', routerLink: 'info' },
       { label: 'Confirm', routerLink: 'confirm' },
     ];
+    
     this.stepsActiveIndex = 0;
+    this.router.navigate(['tracks', 'new', 'start'])
+
   }
 
   nextClick() {

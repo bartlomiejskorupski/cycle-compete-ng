@@ -23,9 +23,17 @@ export class MapService {
     return map;
   }
 
-  createMarker() {
-    const mark = L.marker([0, 0]);
-    return mark;
+  createCircleMarker(latLng?: L.LatLng, options: L.CircleMarkerOptions = {}) {
+    return L.circleMarker(latLng ?? [0, 0], options);
+  }
+
+  createMarker(latLng?: L.LatLng) {
+    return L.marker(latLng ?? [0, 0]);
+  }
+
+  
+  createPolyline(latLngs: L.LatLng[] = [], options: L.PolylineOptions = {}) {
+    return L.polyline(latLngs, options);
   }
 
   addLayer(map: L.Map, layer: L.Layer, ...otherLayers: L.Layer[]) {
