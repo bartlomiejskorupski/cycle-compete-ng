@@ -10,7 +10,7 @@ export class AuthInterceptor implements HttpInterceptor {
       console.log('Auth request, not adding auth header.');
       return next.handle(req);
     }
-    console.log('Adding auth header.');
+    // console.log('Adding auth header.');
     const headerValue = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token;
     const modifiedReq = req.clone({
       headers: req.headers.append('Authorization', headerValue)

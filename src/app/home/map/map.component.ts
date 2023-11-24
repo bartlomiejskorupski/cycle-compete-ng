@@ -1,13 +1,15 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
+import { Observable, Subject, Subscription, auditTime, mergeMap, of } from 'rxjs';
 import { MapService } from 'src/app/home/map/map.service';
+import { TrackService } from 'src/app/shared/service/track/track.service';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
+export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('map') mapEl: ElementRef<HTMLDivElement>;
   private map: L.Map;
@@ -20,12 +22,26 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
 
   geolocationLoading = false;
 
+  mapUpdateSubject = new Subject<void>();
+  sub: Subscription;
+
   constructor(
-    private mapService: MapService
+    private mapService: MapService,
+    private trackService: TrackService
   ) {}
 
   ngOnInit(): void {
-    
+    let i = 0;
+    this.sub = this.mapUpdateSubject
+      .pipe(
+        auditTime(1000),
+        mergeMap(() => this.trackService.getTracksInsideBounds(this.map.getBounds()))
+      ).subscribe({
+        next: res => {
+          console.log(`Map update ${i++}`); 
+          console.log(res);
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -33,10 +49,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy{
       console.log('Geolocation WatchId cleared');
       navigator.geolocation.clearWatch(this.watchId);
     }
+    this.sub?.unsubscribe();
   }
 
   ngAfterViewInit(): void {
     this.initMap();
+
+    // Update while moving the map
+    this.map.on('move', () => this.mapUpdateSubject.next());
+    // initial update
+    this.mapUpdateSubject.next();
   }
 
   private initMap(): void {

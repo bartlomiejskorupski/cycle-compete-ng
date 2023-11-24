@@ -10,7 +10,7 @@ export class MapService {
   }
 
   createMap(element: string | HTMLElement): L.Map {
-    const map = L.map(element).setView([54.370978, 18.612741], 13).setZoom(18);
+    const map = L.map(element, { zoomSnap: 1.0 }).setView([54.370978, 18.612741], 13).setZoom(18);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
       maxZoom: 19,

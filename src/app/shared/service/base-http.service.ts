@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { Observable, catchError, take, throwError } from "rxjs";
 import { environment } from "src/environments/environment";
 import { UserDataService } from "./user-data.service";
@@ -14,10 +14,9 @@ export abstract class BaseHttpService {
     this.BASE_URL = environment.backendUrl;
   }
 
-  protected getEnpoint<T>(endpoint = '') {
-    // TODO: ADD PARAMS
+  protected getEnpoint<T>(endpoint = '', params: HttpParams = undefined) {
     const url = this.BASE_URL + this.BASE_ENDPOINT + endpoint;
-    return this.http.get<T>(url)
+    return this.http.get<T>(url, { params })
       .pipe(
         take(1),
         catchError(this.baseHandleError)
