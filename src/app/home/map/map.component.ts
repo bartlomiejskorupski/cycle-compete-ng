@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { MessageService } from 'primeng/api';
 import { Observable, Subject, Subscription, auditTime, catchError, debounceTime, exhaustMap, mergeMap, of, switchMap, tap } from 'rxjs';
 import { MapService } from 'src/app/home/map/map.service';
+import { GetTracksResponseTrack } from 'src/app/shared/service/track/model/get-tracks-response-track.model';
 import { GetTracksResponse } from 'src/app/shared/service/track/model/get-tracks-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 
@@ -27,7 +28,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private mapUpdateSubject = new Subject<void>();
   private sub: Subscription;
 
-  private trackMarkers: L.Marker[] = [];
+  private trackMarkers: {
+    [id: number]: L.Marker
+  } = {};
 
   constructor(
     private mapService: MapService,
@@ -69,9 +72,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.initMap();
-
+    
     // Update while moving the map
     this.map.on('move', () => this.mapUpdateSubject.next());
+
     // initial update
     this.mapUpdateSubject.next();
   }
@@ -88,15 +92,38 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private updateTrackMarkers = (res: GetTracksResponse) => {
     // console.log(res);
 
-    this.trackMarkers.forEach(mark => mark.remove());
-    this.trackMarkers = [];
-
-    this.trackMarkers = res.tracks.map(trackRes => {
-      const latLng = L.latLng(trackRes.startLatitude, trackRes.startLongitude);
-      return this.mapService.createMarker(latLng);
+    res.tracks.forEach(trackRes => {
+      const existing = this.trackMarkers?.[trackRes.id];
+      if(!existing){
+        this.trackMarkers[trackRes.id] = this.createTrackMarker(trackRes);
+        this.mapService.addLayer(this.map, this.trackMarkers[trackRes.id]);
+        return;
+      }
+      this.trackMarkers[trackRes.id].setPopupContent(this.createTrackPopup(trackRes));
     });
 
-    this.mapService.addLayer(this.map, ...this.trackMarkers);
+  }
+
+  private createTrackMarker(trackRes: GetTracksResponseTrack): L.Marker {
+    const latLng = L.latLng(trackRes.startLatitude, trackRes.startLongitude);
+    const marker = this.mapService.createMarker(latLng);
+    marker.bindPopup(this.createTrackPopup(trackRes));
+    return marker;
+  }
+
+  private createTrackPopup(trackRes: GetTracksResponseTrack): string {
+    // Don't question it
+    return `
+      <div class="text-lg font-bold">${trackRes.name}</div>
+      <div class="text-400">${trackRes.userFirstname} ${trackRes.userLastname}</div>
+      <div class="mt-2 flex justify-content-between gap-4">
+        <div class="text-sm ">
+          <div class="font-bold">Avg. time</div>
+          <div class="">${trackRes.averageTime?.toLocaleTimeString() ?? 'unknown'}</div>
+        </div>
+        <button class="p-element p-button p-component px-2 py-1">Show</button>
+      </div>
+    `;
   }
 
   geolocationClick(): void {
