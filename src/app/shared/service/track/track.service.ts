@@ -20,8 +20,6 @@ export class TrackService extends BaseHttpService{
   }
 
   getTracksInsideBounds(bounds: L.LatLngBounds): Observable<GetTracksResponse> {
-    console.log(bounds.getNorthWest(), bounds.getSouthEast());
-
     const params = new HttpParams()
       .append('tlLng', bounds.getNorthWest().lng)
       .append('tlLat', bounds.getNorthWest().lat)

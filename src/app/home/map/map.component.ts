@@ -1,7 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
-import { Observable, Subject, Subscription, auditTime, mergeMap, of } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { Observable, Subject, Subscription, auditTime, catchError, debounceTime, mergeMap, of, tap } from 'rxjs';
 import { MapService } from 'src/app/home/map/map.service';
+import { GetTracksResponse } from 'src/app/shared/service/track/model/get-tracks-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 
 @Component({
@@ -22,25 +24,38 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   geolocationLoading = false;
 
-  mapUpdateSubject = new Subject<void>();
-  sub: Subscription;
+  private mapUpdateSubject = new Subject<void>();
+  private sub: Subscription;
+
+  private trackMarkers: L.Marker[] = [];
 
   constructor(
     private mapService: MapService,
-    private trackService: TrackService
+    private trackService: TrackService,
+    private messages: MessageService
   ) {}
 
   ngOnInit(): void {
-    let i = 0;
     this.sub = this.mapUpdateSubject
       .pipe(
-        auditTime(1000),
-        mergeMap(() => this.trackService.getTracksInsideBounds(this.map.getBounds()))
+        debounceTime(1000),
+        mergeMap(() => 
+          this.trackService.getTracksInsideBounds(this.map.getBounds())
+            .pipe(
+              catchError(err => {
+                this.messages.clear();
+                this.messages.add({
+                  severity: 'error',
+                  detail: err.message,
+                  life: 15000
+                });
+                return of();
+              })
+            )
+        )
       ).subscribe({
-        next: res => {
-          console.log(`Map update ${i++}`); 
-          console.log(res);
-        }
+        next: this.updateTrackMarkers,
+        error: _ => console.log('ERROR: Map update observable ended.')
       });
   }
 
@@ -68,6 +83,18 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.geoLocCircle = L.circle([0, 0], { radius: 0 }).bindPopup('');
     this.geoLocMarker = L.marker([0, 0]);
+  }
+
+  private updateTrackMarkers = (res: GetTracksResponse) => {
+    this.trackMarkers.forEach(mark => mark.remove());
+    this.trackMarkers = [];
+
+    this.trackMarkers = res.tracks.map(trackRes => {
+      const latLng = L.latLng(trackRes.startLatitude, trackRes.startLongitude);
+      return this.mapService.createMarker(latLng);
+    });
+
+    this.mapService.addLayer(this.map, ...this.trackMarkers);
   }
 
   geolocationClick(): void {

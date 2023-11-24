@@ -36,8 +36,11 @@ export class MapService {
     return L.polyline(latLngs, options);
   }
 
-  addLayer(map: L.Map, layer: L.Layer, ...otherLayers: L.Layer[]) {
-    [layer, ...otherLayers].forEach(layer => map.hasLayer(layer) || layer.addTo(map));
+  addLayer(map: L.Map, ...otherLayers: L.Layer[]) {
+    [...otherLayers].forEach(layer => map.hasLayer(layer) || layer.addTo(map));
   }
-
+  
+  removeLayer(map: L.Map, ...layers: L.Layer[]) {
+    [...layers].forEach(layer => map.hasLayer(layer) || layer.removeFrom(map));
+  }
 }
