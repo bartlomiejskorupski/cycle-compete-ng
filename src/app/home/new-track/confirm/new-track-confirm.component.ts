@@ -36,6 +36,11 @@ export class NewTrackConfirmComponent {
         },
         error: err => {
           console.log(err);
+          this.messages.add({
+            severity: 'error',
+            detail: err.message,
+            life: 15000
+          });
         }
       });
   }
