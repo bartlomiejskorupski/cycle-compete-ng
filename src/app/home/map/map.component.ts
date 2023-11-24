@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { MessageService } from 'primeng/api';
-import { Observable, Subject, Subscription, auditTime, catchError, debounceTime, mergeMap, of, tap } from 'rxjs';
+import { Observable, Subject, Subscription, auditTime, catchError, debounceTime, exhaustMap, mergeMap, of, switchMap, tap } from 'rxjs';
 import { MapService } from 'src/app/home/map/map.service';
 import { GetTracksResponse } from 'src/app/shared/service/track/model/get-tracks-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
@@ -38,8 +38,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.sub = this.mapUpdateSubject
       .pipe(
-        debounceTime(1000),
-        mergeMap(() => 
+        auditTime(1000),
+        exhaustMap(() => 
           this.trackService.getTracksInsideBounds(this.map.getBounds())
             .pipe(
               catchError(err => {
@@ -77,7 +77,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initMap(): void {
-    console.log('Map init.');
+    // console.log('Map init.');
     
     this.map = this.mapService.createMap(this.mapEl.nativeElement);
 
@@ -86,6 +86,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateTrackMarkers = (res: GetTracksResponse) => {
+    // console.log(res);
+
     this.trackMarkers.forEach(mark => mark.remove());
     this.trackMarkers = [];
 
