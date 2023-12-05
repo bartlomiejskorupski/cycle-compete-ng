@@ -41,4 +41,23 @@ export class NewTrackStartComponent implements AfterViewInit {
     this.service.startLatLng = e.latlng;
   }
 
+  onNavigationClick() {
+    navigator.geolocation.getCurrentPosition(
+      this.navigationSuccess,
+      this.navigationError,
+      { enableHighAccuracy: true, timeout: 3000 }
+    );
+  }
+
+  private navigationSuccess = (pos: GeolocationPosition) => {
+    const { latitude, longitude, accuracy } = pos.coords;
+    this.map.setView([latitude, longitude], 18);
+    
+  }
+
+  private navigationError = (err: GeolocationPositionError) => {
+    console.log(err);
+    // TODO
+  }
+
 }

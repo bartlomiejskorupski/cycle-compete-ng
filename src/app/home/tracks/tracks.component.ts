@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ClosestTrackResponse } from 'src/app/shared/service/track/model/closest-track-response.model';
+import { GetClosestTracksResponse } from 'src/app/shared/service/track/model/get-closest-tracks-response.model';
+import { TrackService } from 'src/app/shared/service/track/track.service';
 
 interface TrackListItem {
   name?: string;
@@ -12,33 +16,43 @@ interface TrackListItem {
 })
 export class TracksComponent implements OnInit {
 
-  tracks: TrackListItem[];
+  tracks: ClosestTrackResponse[];
 
-  constructor() {
+  loading: boolean;
 
-  }
+  constructor(
+    private trackService: TrackService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.tracks = [
-      { name: 'Track 1', distance: 1.34 },
-      { name: 'Track 2', distance: 2.13 },
-      { name: 'Track 3', distance: 3.14 },
-      { name: 'Track 4', distance: 3.16 },
-      { name: 'Track 5', distance: 3.23 },
-      { name: 'Track 6', distance: 24.16 },
-      { name: 'Track 7', distance: 35.01 },
-      { name: 'Track 8', distance: 16.99 },
-      { name: 'Track 9', distance: 17.06 },
-      { name: 'Track 1', distance: 1.34 },
-      { name: 'Track 2', distance: 2.13 },
-      { name: 'Track 3', distance: 3.14 },
-      { name: 'Track 4', distance: 3.16 },
-      { name: 'Track 5', distance: 3.23 },
-      { name: 'Track 6', distance: 4.16 },
-      { name: 'Track 7', distance: 5.01 },
-      { name: 'Track 8', distance: 6.99 },
-      { name: 'Track 9', distance: 7.06 },
-    ];
+    this.loading = true;
+    navigator.geolocation.getCurrentPosition(
+      this.geolocationSuccess, this.geolocationError,
+      { enableHighAccuracy: true, timeout: 3000 }
+    );
+  }   
+
+  private geolocationSuccess = (pos: GeolocationPosition): void => {
+    const { latitude, longitude, accuracy } = pos.coords;
+    
+    this.trackService.getClosest(10, longitude, latitude)
+      .subscribe({
+        next: (res: GetClosestTracksResponse) => {
+          this.loading = false;
+          this.tracks = res.tracks;
+        }
+      });
+  }
+  private geolocationError = (err: GeolocationPositionError): void => {
+    console.log(err);
+  }
+
+  trackMapClick(id: number) {
+    this.router.navigate(['home'], { queryParams: {
+      trackId: id
+    }});
+    
   }
 
 }

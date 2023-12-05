@@ -1,10 +1,9 @@
 
-export interface GetTracksResponseTrack { 
+export interface ClosestTrackResponse {
   id: number;
   userFirstname: string;
   userLastname: string;
   name: string;
-  startLongitude: number;
-  startLatitude: number;
   averageTime: string;
- }
+  distanceTo: number;
+}

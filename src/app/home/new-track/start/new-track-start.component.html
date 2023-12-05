@@ -4,10 +4,11 @@
   </div>
   <div class="flex-none flex flex-column relative p-input-icon-left">
     <i class="pi pi-search"></i>
-    <input type="text" pInputText placeholder="Search for a place..."/>
+    <input type="text" pInputText placeholder="Search for a place..." />
     <div class="absolute right-0 h-full">
       <button pButton icon="pi pi-compass"
-        class="p-button-text p-button-secondary p-button-lg h-full">
+        class="p-button-text p-button-secondary p-button-lg h-full"
+        (click)="onNavigationClick()">
       </button>
     </div>
   </div>

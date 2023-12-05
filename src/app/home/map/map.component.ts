@@ -1,10 +1,13 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import * as L from 'leaflet';
 import { MessageService } from 'primeng/api';
-import { Observable, Subject, Subscription, auditTime, catchError, debounceTime, exhaustMap, mergeMap, of, switchMap, tap } from 'rxjs';
+import { Subject, Subscription, auditTime, catchError, exhaustMap, fromEvent, mergeMap, of } from 'rxjs';
 import { MapService } from 'src/app/home/map/map.service';
+import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
 import { GetTracksResponseTrack } from 'src/app/shared/service/track/model/get-tracks-response-track.model';
 import { GetTracksResponse } from 'src/app/shared/service/track/model/get-tracks-response.model';
+import { TrackPointResponse } from 'src/app/shared/service/track/model/track-point-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 
 @Component({
@@ -20,13 +23,15 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private geoLocCircle: L.Circle;
   private geoLocMarker: L.Marker;
 
+  private routeLine: L.Polyline;
+
   private watchId: number = null;
   private lastLatLon: L.LatLng = null;
 
   geolocationLoading = false;
 
   private mapUpdateSubject = new Subject<void>();
-  private sub: Subscription;
+  private subs: Subscription[] = [];
 
   private trackMarkers: {
     [id: number]: L.Marker
@@ -35,11 +40,12 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private mapService: MapService,
     private trackService: TrackService,
-    private messages: MessageService
+    private messages: MessageService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.sub = this.mapUpdateSubject
+    this.subs.push(this.mapUpdateSubject
       .pipe(
         auditTime(1000),
         exhaustMap(() => 
@@ -59,7 +65,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       ).subscribe({
         next: this.updateTrackMarkers,
         error: _ => console.log('ERROR: Map update observable ended.')
-      });
+      }));
   }
 
   ngOnDestroy(): void {
@@ -67,12 +73,32 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('Geolocation WatchId cleared');
       navigator.geolocation.clearWatch(this.watchId);
     }
-    this.sub?.unsubscribe();
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 
   ngAfterViewInit(): void {
     this.initMap();
     
+    // Focus on track
+    this.subs.push(this.route.queryParams
+      .pipe(
+        mergeMap(params => {
+          if(!params['trackId']){
+            return of(null);
+          }
+          return this.trackService.getTrack(params.trackId);
+        })
+      )
+      .subscribe({
+      next: (track: GetTrackResponse) => {
+        console.log(track);
+        if(!track)
+          return;
+        this.map.setView([track.startLatitude, track.startLongitude], 18);
+        this.updateRouteLine(track.trackPoints);
+      }
+    }));
+
     // Update while moving the map
     this.map.on('move', () => this.mapUpdateSubject.next());
 
@@ -87,6 +113,19 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.geoLocCircle = L.circle([0, 0], { radius: 0 }).bindPopup('');
     this.geoLocMarker = L.marker([0, 0]);
+
+    this.routeLine = this.mapService.createPolyline();
+    this.mapService.addLayer(this.map, this.routeLine);
+  }
+
+  private updateRouteLine(trackPoints: TrackPointResponse[]) {
+    const points = [...trackPoints];
+    points.sort((a, b) => a.sequencePosition - b.sequencePosition);
+
+    this.routeLine.setLatLngs([]);
+    points.forEach(point => {
+      this.routeLine.addLatLng([point.latitude, point.longitude]);
+    });
   }
 
   private updateTrackMarkers = (res: GetTracksResponse) => {
@@ -119,11 +158,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       <div class="mt-2 flex justify-content-between gap-4">
         <div class="text-sm ">
           <div class="font-bold">Avg. time</div>
-          <div class="">${trackRes.averageTime?.toLocaleTimeString() ?? 'unknown'}</div>
+          <div class="">${trackRes.averageTime}</div>
         </div>
-        <button class="p-element p-button p-component px-2 py-1">Show</button>
+        <a href="/home?trackId=${trackRes.id}"><button class="p-element p-button p-component px-2 py-1">Show</button></a>
       </div>
     `;
+  }
+
+  showTrackClick() {
+    console.log('SHOW CLICK');
+    
   }
 
   geolocationClick(): void {

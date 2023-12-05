@@ -6,6 +6,8 @@ import { Observable } from "rxjs";
 import { GetTracksResponse } from "./model/get-tracks-response.model";
 import { CreateTrackRequest } from "./model/create-track-request.model";
 import { TrackPointResponse } from "./model/track-point-response.model";
+import { GetClosestTracksResponse } from "./model/get-closest-tracks-response.model";
+import { GetTrackResponse } from "./model/get-track-response.model";
 
 @Injectable({ providedIn: 'root' })
 export class TrackService extends BaseHttpService{
@@ -17,6 +19,10 @@ export class TrackService extends BaseHttpService{
   ) {
     super(http, userData);
     this.BASE_ENDPOINT = '/track';
+  }
+
+  getTrack(id: number): Observable<GetTrackResponse>{
+    return this.getEnpoint<GetTrackResponse>(`/${id}`);
   }
 
   getTracksInsideBounds(bounds: L.LatLngBounds): Observable<GetTracksResponse> {
@@ -52,7 +58,13 @@ export class TrackService extends BaseHttpService{
     return this.postEndpoint(requestBody);
   }
 
-
+  getClosest(n: number, lng: number, lat: number) : Observable<GetClosestTracksResponse> {
+    const params = new HttpParams()
+      .append('n', n)
+      .append('lon', lng)
+      .append('lat', lat);
+    return this.getEnpoint<GetClosestTracksResponse>('/closest', params);
+  }
 
 
 }
