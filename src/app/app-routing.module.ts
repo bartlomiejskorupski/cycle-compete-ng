@@ -13,6 +13,7 @@ import { NewTrackStartComponent } from "./home/new-track/start/new-track-start.c
 import { NewTrackRouteComponent } from "./home/new-track/route/new-track-route.component";
 import { NewTrackInfoComponent } from "./home/new-track/info/new-track-info.component";
 import { NewTrackConfirmComponent } from "./home/new-track/confirm/new-track-confirm.component";
+import { TrackRunComponent } from "./home/track-run/track-run.component";
 
 const routes: Routes = [
   { path: '', component: LandingComponent, data: { animation: 'landing' } },
@@ -27,6 +28,7 @@ const routes: Routes = [
     { path: 'info', component: NewTrackInfoComponent, data: { stepsIndex: 2 } },
     { path: 'confirm', component: NewTrackConfirmComponent, data: { stepsIndex: 3 } }
   ]},
+  { path: 'run' , component: TrackRunComponent, data: { animation: 'run' }},
   { path: 'not-found', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/not-found' }
 ];
