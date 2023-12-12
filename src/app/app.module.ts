@@ -40,6 +40,8 @@ import { NewTrackRouteComponent } from './home/new-track/route/new-track-route.c
 import { NewTrackInfoComponent } from './home/new-track/info/new-track-info.component';
 import { NewTrackConfirmComponent } from './home/new-track/confirm/new-track-confirm.component';
 import { TrackRunComponent } from './home/track-run/track-run.component';
+import { TrackDetailsComponent } from './home/track-details/track-details.component';
+import { HistoryComponent } from './home/history/history.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import { TrackRunComponent } from './home/track-run/track-run.component';
     NewTrackRouteComponent,
     NewTrackInfoComponent,
     NewTrackConfirmComponent,
-    TrackRunComponent
+    TrackRunComponent,
+    TrackDetailsComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,

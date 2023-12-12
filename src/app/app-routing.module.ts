@@ -14,6 +14,8 @@ import { NewTrackRouteComponent } from "./home/new-track/route/new-track-route.c
 import { NewTrackInfoComponent } from "./home/new-track/info/new-track-info.component";
 import { NewTrackConfirmComponent } from "./home/new-track/confirm/new-track-confirm.component";
 import { TrackRunComponent } from "./home/track-run/track-run.component";
+import { TrackDetailsComponent } from "./home/track-details/track-details.component";
+import { HistoryComponent } from "./home/history/history.component";
 
 const routes: Routes = [
   { path: '', component: LandingComponent, data: { animation: 'landing' } },
@@ -21,7 +23,9 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, data: { animation: 'login' } },
   { path: 'home', component: HomeComponent, data: { animation: 'home' }, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, data: { animation: 'settings' }, canActivate: [AuthGuard] },
+  { path: 'history', component: HistoryComponent, data: { animation: 'history' }, canActivate: [AuthGuard] },
   { path: 'tracks', component: TracksComponent, data: { animation: 'tracks' }, canActivate: [AuthGuard] },
+  { path: 'details/:id', component: TrackDetailsComponent, data: { animation: 'details' }, canActivate: [AuthGuard] },
   { path: 'tracks/new', component: NewTrackComponent, data: { animation: 'new-track' }, canActivate: [AuthGuard], children: [
     { path: 'start', component: NewTrackStartComponent, data: { stepsIndex: 0 } },
     { path: 'route', component: NewTrackRouteComponent, data: { stepsIndex: 1 } },

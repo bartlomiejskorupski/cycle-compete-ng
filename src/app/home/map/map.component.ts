@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as L from 'leaflet';
 import { MessageService } from 'primeng/api';
 import { Subject, Subscription, auditTime, catchError, exhaustMap, fromEvent, mergeMap, of } from 'rxjs';
@@ -41,7 +41,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     private mapService: MapService,
     private trackService: TrackService,
     private messages: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -91,9 +92,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       )
       .subscribe({
       next: (track: GetTrackResponse) => {
-        console.log(track);
         if(!track)
           return;
+        console.log(track);
         this.map.setView([track.startLatitude, track.startLongitude], 18);
         this.updateRouteLine(track.trackPoints);
       }
@@ -121,7 +122,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private updateRouteLine(trackPoints: TrackPointResponse[]) {
     const points = [...trackPoints];
     points.sort((a, b) => a.sequencePosition - b.sequencePosition);
-
+    
     this.routeLine.setLatLngs([]);
     points.forEach(point => {
       this.routeLine.addLatLng([point.latitude, point.longitude]);
@@ -150,24 +151,35 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     return marker;
   }
 
-  private createTrackPopup(trackRes: GetTracksResponseTrack): string {
-    // Don't question it
-    return `
-      <div class="text-lg font-bold">${trackRes.name}</div>
-      <div class="text-400">${trackRes.userFirstname} ${trackRes.userLastname}</div>
-      <div class="mt-2 flex justify-content-between gap-4">
-        <div class="text-sm ">
-          <div class="font-bold">Avg. time</div>
-          <div class="">${trackRes.averageTime}</div>
-        </div>
-        <a href="/home?trackId=${trackRes.id}"><button class="p-element p-button p-component px-2 py-1">Show</button></a>
-      </div>
+  private createTrackPopup(trackRes: GetTracksResponseTrack): HTMLDivElement {
+    const cont = document.createElement('div');
+    const name = document.createElement('div');
+    name.classList.add('text-lg', 'font-bold');
+    name.innerHTML = trackRes.name;
+    const user = document.createElement('div');
+    user.classList.add('text-400');
+    user.innerHTML = trackRes.userFirstname + ' ' + trackRes.userLastname;
+    const flexCont = document.createElement('div');
+    flexCont.classList.add('mt-2', 'flex', 'justify-content-between', 'gap-4');
+    const avgTimeCont = document.createElement('div');
+    avgTimeCont.classList.add('text-sm');
+    avgTimeCont.innerHTML = `
+      <div class="font-bold">Avg. time</div>
+      <div class="">${trackRes.averageTime}</div>
     `;
+    const showBtn = document.createElement('button');
+    showBtn.classList.add('p-element', 'p-button', 'p-component', 'px-2', 'py-1');
+    showBtn.innerHTML = 'Show';
+    flexCont.append(avgTimeCont, showBtn);
+    cont.append(name, user, flexCont);
+
+    showBtn.addEventListener('click', this.showTrackClick(trackRes.id));
+
+    return cont;
   }
 
-  showTrackClick() {
-    console.log('SHOW CLICK');
-    
+  showTrackClick = (id: number) => () =>{
+    this.router.navigate(['details', id]);
   }
 
   geolocationClick(): void {
@@ -187,6 +199,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   geolocationSuccess = (pos: GeolocationPosition): void => {
+    console.log('Speed:', pos.coords.speed);
+    
     const { latitude, longitude, accuracy } = pos.coords;
     const latLon = new L.LatLng(latitude, longitude);
     

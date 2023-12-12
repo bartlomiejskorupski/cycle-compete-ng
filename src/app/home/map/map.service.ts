@@ -36,6 +36,10 @@ export class MapService {
     return L.polyline(latLngs, options);
   }
 
+  createLatLon(lat: number, lon: number): L.LatLng {
+    return L.latLng(lat, lon);
+  }
+
   addLayer(map: L.Map, ...otherLayers: L.Layer[]) {
     [...otherLayers].forEach(layer => map.hasLayer(layer) || layer.addTo(map));
   }
