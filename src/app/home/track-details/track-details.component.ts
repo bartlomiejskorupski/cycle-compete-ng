@@ -10,16 +10,12 @@ import { GetTrackRunResponse } from 'src/app/shared/service/track-run/model/get-
 @Component({
   selector: 'app-track-details',
   templateUrl: './track-details.component.html',
-  styleUrls: ['./track-details.component.css']
+  styleUrls: ['./track-details.component.css'],
+  providers: [MapService]
 })
 export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('map') mapEl: ElementRef<HTMLDivElement>;
-  private map: L.Map;
-
-  private routeStartMarker: L.CircleMarker;
-  private routeEndMarker: L.CircleMarker;
-  private routeLine: L.Polyline;
 
   track: GetTrackResponse;
   trackRuns: GetTrackRunResponse[];
@@ -54,7 +50,7 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.map = this.mapService.createMap(this.mapEl.nativeElement);
+    this.mapService.initializeMap(this.mapEl.nativeElement);
 
     this.trackChangedSubj.subscribe({
       next: (val) => {
@@ -65,21 +61,15 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateMap() {
-    const startLatLon = this.mapService.createLatLon(this.track.startLatitude, this.track.startLongitude);
+    this.mapService.setView([this.track.startLatitude, this.track.startLongitude]);
+
     const lastPoint = this.track.trackPoints[this.track.trackPoints.length - 1];
-    const endLatLon = this.mapService.createLatLon(lastPoint.latitude, lastPoint.longitude);
-    this.map.setView(startLatLon);
+    const endLatLng: [number, number] = [lastPoint.latitude, lastPoint.longitude];
+    const startLatLng: [number, number] = [this.track.startLatitude, this.track.startLongitude];
+    const routeLatLngs: [number, number][] = this.track.trackPoints.map(p => [p.latitude, p.longitude]);
+    
+    this.mapService.updateDetailsRoute(startLatLng, endLatLng, routeLatLngs);
 
-    this.routeStartMarker = this.mapService.createCircleMarker(startLatLon, { radius: 8, color: 'green' });
-    this.routeStartMarker.bindPopup('Start here');
-    this.routeEndMarker = this.mapService.createCircleMarker(endLatLon, { radius: 8, color: 'red' });
-
-    this.routeLine = this.mapService.createPolyline([]);
-    for (const point of this.track.trackPoints) {
-      this.routeLine.addLatLng([point.latitude, point.longitude]);
-    }
-
-    this.mapService.addLayer(this.map, this.routeLine, this.routeEndMarker, this.routeStartMarker);
   }
 
 }
