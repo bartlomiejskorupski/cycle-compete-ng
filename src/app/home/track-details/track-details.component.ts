@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subscription, mergeMap, tap } from 'rxjs';
+import { Subscription, mergeMap, tap } from 'rxjs';
 import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
@@ -19,8 +19,6 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   track: GetTrackResponse;
   trackRuns: GetTrackRunResponse[];
-
-  private trackChangedSubj = new BehaviorSubject<boolean>(false);
 
   private sub: Subscription;
 
@@ -42,7 +40,7 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
           { userFirstName: 'Bartłomiej', userLastName: 'Skorupski', duration: '9:48' },
         ];
       })
-    ).subscribe({ next: _ => this.trackChangedSubj.next(true) });
+    ).subscribe({ next: _ => this.updateMap() });
   }
     
   ngOnDestroy(): void {
@@ -51,13 +49,6 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapEl.nativeElement);
-
-    this.trackChangedSubj.subscribe({
-      next: (val) => {
-        if(!val) return;
-        this.updateMap();
-      }
-    });
   }
 
   updateMap() {
@@ -69,7 +60,6 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     const routeLatLngs: [number, number][] = this.track.trackPoints.map(p => [p.latitude, p.longitude]);
     
     this.mapService.updateDetailsRoute(startLatLng, endLatLng, routeLatLngs);
-
   }
 
 }
