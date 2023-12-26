@@ -35,24 +35,24 @@ export class TrackService extends BaseHttpService{
     return this.getEnpoint<GetTracksResponse>('', params);
   }
 
-  createTrack(name: string, desc: string, startLatLng: L.LatLng, points: L.LatLng[]): Observable<any> {
+  createTrack(name: string, desc: string, startLatLng: L.LatLngTuple, points: L.LatLngTuple[]): Observable<any> {
     const trackPoints: TrackPointResponse[] = [];
     trackPoints.push({ 
-      longitude: startLatLng.lng,
-      latitude: startLatLng.lat,
+      longitude: startLatLng[1],
+      latitude: startLatLng[0],
       sequencePosition: 0
     });
     points.forEach((latLng, index) => trackPoints.push({
-      longitude: latLng.lng,
-      latitude: latLng.lat,
+      longitude: latLng[1],
+      latitude: latLng[0],
       sequencePosition: index + 1
     }));
 
     const requestBody: CreateTrackRequest = {
       name,
       description: desc,
-      startLatitude: startLatLng.lat,
-      startLongitude: startLatLng.lng,
+      startLatitude: startLatLng[0],
+      startLongitude: startLatLng[1],
       trackPoints
     };
     return this.postEndpoint(requestBody);

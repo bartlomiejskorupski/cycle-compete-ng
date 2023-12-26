@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
 import { MapService } from '../../map/map.service';
 import { LeafletMouseEvent } from 'leaflet';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-track-start',
@@ -15,7 +16,8 @@ export class NewTrackStartComponent implements AfterViewInit {
 
   constructor(
     private service: NewTrackService,
-    private map: MapService
+    private map: MapService,
+    private router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -31,7 +33,7 @@ export class NewTrackStartComponent implements AfterViewInit {
 
   onMapClick = (e: LeafletMouseEvent) => {
     this.map.updateMarker(e.latlng);
-    this.service.startLatLng = e.latlng;
+    this.service.startLatLng = [e.latlng.lat, e.latlng.lng];
   }
 
   onNavigationClick() {
@@ -51,6 +53,18 @@ export class NewTrackStartComponent implements AfterViewInit {
   private navigationError = (err: GeolocationPositionError) => {
     console.log(err);
     // TODO
+  }
+
+  canClickNext() {
+    return !!this.service.startLatLng;
+  }
+
+  backClick() {
+    this.router.navigate(['home']);
+  }
+
+  nextClick() {
+    this.router.navigate(['tracks', 'new', 'route'])
   }
 
 }

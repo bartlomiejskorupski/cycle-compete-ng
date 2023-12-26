@@ -1,4 +1,27 @@
-<div class="surface-card border-round flex flex-column p-3 gap-2">
-  <div class="text-center font-bold text-xl mb-2">Confirmation</div>
-  <button pButton label="Confirm" (click)="onConfirmClick()"></button>
+<div class="surface-card flex flex-column pt-1 h-full">
+  <div class="flex-none py-1 font-bold text-center text-lg">
+    Confirmation
+  </div>
+  <div class="flex-none grid grid-nogutter px-2 pb-2">
+    <div class="col-4 font-bold">Name:</div>
+    <div class="col-8">{{ name }}</div>
+    <div class="col-4 font-bold">Desription:</div>
+    <div class="col-8">{{ description }}</div>
+  </div>
+  <div class="flex-grow-1"> 
+    <div id="map" #map class="h-full">
+    </div>
+  </div>
+  <div class="flex-none flex gap-1 px-1 py-1">
+      <button pButton
+        label="Back"
+        class="p-button-secondary w-full"
+        (click)="backClick()">
+      </button>
+      <button pButton
+        class="w-full"
+        label="Confirm"
+        (click)="onConfirmClick()">
+      </button>
+  </div>
 </div>

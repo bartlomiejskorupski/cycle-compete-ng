@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-track-info',
@@ -12,7 +13,8 @@ export class NewTrackInfoComponent implements OnInit{
   trackDesc: string;
 
   constructor(
-    private service: NewTrackService
+    private service: NewTrackService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -28,4 +30,15 @@ export class NewTrackInfoComponent implements OnInit{
     this.service.trackDesc = this.trackDesc; 
   }
 
+  canClickNext() {
+    return !!this.service.trackName;
+  }
+
+  backClick() {
+    this.router.navigate(['tracks', 'new', 'route']);
+  }
+
+  nextClick() {
+    this.router.navigate(['tracks', 'new', 'confirm'])
+  }
 }

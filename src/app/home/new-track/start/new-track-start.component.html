@@ -1,8 +1,8 @@
-<div class="surface-card border-round flex flex-column p-3 gap-2 h-full">
-  <div class="flex-none font-bold text-center text-lg">
+<div class="surface-card flex flex-column pt-1 h-full">
+  <div class="flex-none py-1 font-bold text-center text-lg">
     Choose a starting point
   </div>
-  <div class="flex-none flex flex-column relative p-input-icon-left">
+  <div class="flex-none mb-1 flex flex-column relative p-input-icon-left mx-2">
     <i class="pi pi-search"></i>
     <input type="text" pInputText placeholder="Search for a place..." />
     <div class="absolute right-0 h-full">
@@ -12,9 +12,22 @@
       </button>
     </div>
   </div>
-  <div class="flex-grow-1">
+  <div class="flex-grow-1"> 
     <div id="map" #map
       class="h-full">
     </div>
+  </div>
+  <div class=" flex-none flex gap-1 px-1 py-1">
+      <button pButton
+        label="Back"
+        class="p-button-secondary w-full"
+        (click)="backClick()">
+      </button>
+      <button pButton
+        class="w-full"
+        label="Next"
+        [disabled]="!canClickNext()" 
+        (click)="nextClick()">
+      </button>
   </div>
 </div>

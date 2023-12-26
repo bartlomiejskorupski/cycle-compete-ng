@@ -41,7 +41,7 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit {
 
   onMapClick = (e: LeafletMouseEvent) => {
     this.mapService.addRoutePoint(e.latlng);
-    this.service.route.push(e.latlng);
+    this.service.route.push([e.latlng.lat, e.latlng.lng]);
   }
 
   undoClick() {
@@ -49,4 +49,15 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit {
     this.service.route.pop();
   }
 
+  canClickNext() {
+    return !!this.service.route && this.service.route.length > 0;;
+  }
+
+  backClick() {
+    this.router.navigate(['tracks', 'new', 'start']);
+  }
+
+  nextClick() {
+    this.router.navigate(['tracks', 'new', 'info'])
+  }
 }
