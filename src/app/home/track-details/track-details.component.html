@@ -24,8 +24,8 @@
             <div class="col-fixed w-2">Time</div>
             <hr class="col-12"/>
           </div>
-          <div class="flex-grow-1 grid grid-nogutter text-lg align-content-start">
-            <div class="col-12 max-h-full overflow-y-auto">
+          <div class="flex-grow-1 text-lg align-content-start overflow-hidden">
+            <div class="h-full overflow-y-scroll">
               <div class="py-1 grid grid-nogutter" *ngFor="let run of trackRuns; index as i">
                 <div class="col-fixed w-1 text-center">{{ i + 1 }}</div>
                 <div class="col pl-2">{{ run.userFirstName }} {{ run.userLastName }}</div>
@@ -35,7 +35,7 @@
           </div>
           <div class="flex-none flex flex-column">
             <p-button
-              styleClass=" w-full font-bold" 
+              styleClass="w-full font-bold" 
               routerLink="/run"
               label="Start">
             </p-button>

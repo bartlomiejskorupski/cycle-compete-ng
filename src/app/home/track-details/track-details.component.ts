@@ -36,8 +36,14 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       mergeMap(trackRes => this.trackRunService.getBestTrackRuns(trackRes.id)),
       tap(_ => {
         this.trackRuns = [
-          { userFirstName: 'Sebastian', userLastName: 'Potrykus', duration: '8:21' },
-          { userFirstName: 'Bartłomiej', userLastName: 'Skorupski', duration: '9:48' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '8:21' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '9:48' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:12' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:18' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:22' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:24' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:29' },
+          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:42' },
         ];
       })
     ).subscribe({ next: _ => this.updateMap() });
