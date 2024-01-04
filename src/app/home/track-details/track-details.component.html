@@ -26,10 +26,16 @@
           </div>
           <div class="flex-grow-1 text-lg align-content-start overflow-hidden">
             <div class="h-full overflow-y-scroll">
-              <div class="py-1 grid grid-nogutter" *ngFor="let run of trackRuns; index as i">
-                <div class="col-fixed w-1 text-center">{{ i + 1 }}</div>
+              <div class="py-1 grid grid-nogutter" *ngFor="let run of trackRuns; let i = index">
+                <div class="col-fixed w-1 text-center"
+                  *ngIf="i !== 0">
+                  {{ i + 1 }}
+                </div>
+                <app-crown-icon style="width: 1.75rem; height: 1.5rem;"
+                  *ngIf="i === 0">
+                </app-crown-icon>
                 <div class="col pl-2">{{ run.userFirstName }} {{ run.userLastName }}</div>
-                <div class="col-fixed w-2 text-right">{{ run.duration }}</div>
+                <div class="col-fixed w-2 text-right pr-2">{{ run.duration }}</div>
               </div>
             </div>
           </div>

@@ -24,6 +24,14 @@ import { AuthInterceptor } from './auth/auth-interceptor.service';
 import { UpdatePopupComponent } from './shared/component/update-popup/update-popup.component';
 import { TracksComponent } from './home/tracks/tracks.component';
 import { NewTrackComponent } from './home/new-track/new-track.component';
+import { NewTrackStartComponent } from './home/new-track/start/new-track-start.component';
+import { NewTrackRouteComponent } from './home/new-track/route/new-track-route.component';
+import { NewTrackInfoComponent } from './home/new-track/info/new-track-info.component';
+import { NewTrackConfirmComponent } from './home/new-track/confirm/new-track-confirm.component';
+import { TrackRunComponent } from './home/track-run/track-run.component';
+import { TrackDetailsComponent } from './home/track-details/track-details.component';
+import { HistoryComponent } from './home/history/history.component';
+import { CrownIconComponent } from './shared/icons/crown-icon.component';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -35,13 +43,6 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { StepsModule } from 'primeng/steps';
-import { NewTrackStartComponent } from './home/new-track/start/new-track-start.component';
-import { NewTrackRouteComponent } from './home/new-track/route/new-track-route.component';
-import { NewTrackInfoComponent } from './home/new-track/info/new-track-info.component';
-import { NewTrackConfirmComponent } from './home/new-track/confirm/new-track-confirm.component';
-import { TrackRunComponent } from './home/track-run/track-run.component';
-import { TrackDetailsComponent } from './home/track-details/track-details.component';
-import { HistoryComponent } from './home/history/history.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { HistoryComponent } from './home/history/history.component';
     NewTrackConfirmComponent,
     TrackRunComponent,
     TrackDetailsComponent,
-    HistoryComponent
+    HistoryComponent,
+    CrownIconComponent
   ],
   imports: [
     BrowserModule,
