@@ -1,7 +1,9 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import * as L from 'leaflet';
+import 'leaflet-routing-machine';
 import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
+import { environment } from "src/environments/environment";
 
 @Injectable()
 export class MapService implements OnDestroy {
@@ -107,6 +109,21 @@ export class MapService implements OnDestroy {
     const routeLineLatLngs = this.routeCreation.routeLine.getLatLngs();
     routeLineLatLngs.pop();
     this.routeCreation.routeLine.setLatLngs(routeLineLatLngs);
+  }
+
+  addRoutingMachine(startLatLng: L.LatLngExpression) {
+    L.Routing.control({
+      routeWhileDragging: false,
+      router: L.Routing.mapbox(environment.routingAPIToken, {
+        useHints: false,
+        profile: 'mapbox/cycling'
+      }),
+      waypoints: [ 
+        L.latLng(startLatLng),
+        L.latLng(startLatLng)
+      ],
+      show: false
+    }).addTo(this.map);
   }
 
   updateDetailsRoute(startLatLng: L.LatLngExpression, endLatLng: L.LatLngExpression, route: L.LatLngExpression[]) {
