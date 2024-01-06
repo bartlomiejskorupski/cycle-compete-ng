@@ -114,7 +114,8 @@ export class MapService implements OnDestroy {
   addRoutingMachine(startLatLng: L.LatLngExpression) {
     L.Routing.control({
       routeWhileDragging: false,
-      router: L.Routing.mapbox(environment.routingAPIToken, {
+      router: L.Routing.mapbox('', {
+        serviceUrl: environment.backendUrl+'/directions',
         useHints: false,
         profile: 'mapbox/cycling'
       }),
