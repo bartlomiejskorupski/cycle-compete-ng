@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
 import { environment } from "src/environments/environment";
 
@@ -40,6 +40,14 @@ export class MapService implements OnDestroy {
     routeLine: L.Polyline;
   }
 
+  private routingControl: L.Routing.Control;
+
+  private routeFoundSubject = new Subject<L.LatLng[]>();
+  routeFound$ = this.routeFoundSubject.asObservable();
+
+  private startIcon: L.Icon;
+  private endIcon: L.Icon;
+
   constructor() {}
 
   ngOnDestroy(): void {
@@ -57,6 +65,20 @@ export class MapService implements OnDestroy {
 
     L.Icon.Default.imagePath = 'assets/map/';
     L.control.scale().addTo(this.map);
+
+    this.startIcon = L.icon({
+      iconUrl: 'assets/map/marker-icon-start.png',
+      shadowUrl: 'assets/map/marker-shadow.png',
+      iconAnchor: [12, 40],
+      shadowAnchor: [12, 40]
+    });
+
+    this.endIcon = L.icon({
+      iconUrl: 'assets/map/marker-icon-end.png',
+      shadowUrl: 'assets/map/marker-shadow.png',
+      iconAnchor: [12, 40],
+      shadowAnchor: [12, 40]
+    });
   }
 
   private addTileLayer() {
@@ -112,19 +134,40 @@ export class MapService implements OnDestroy {
   }
 
   addRoutingMachine(startLatLng: L.LatLngExpression) {
-    L.Routing.control({
+    this.routingControl = L.Routing.control({
       routeWhileDragging: false,
-      router: L.Routing.mapbox('', {
-        serviceUrl: environment.backendUrl+'/directions',
+      router: L.Routing.mapbox(environment.routingAPIToken, {
+        // serviceUrl: environment.backendUrl+'/routing',
         useHints: false,
         profile: 'mapbox/cycling'
       }),
       waypoints: [ 
-        L.latLng(startLatLng),
         L.latLng(startLatLng)
       ],
-      show: false
+      show: false,
+      plan: L.Routing.plan([L.latLng(startLatLng)], {
+        createMarker: (i, w, num) =>  {
+          if(i === 0) {
+            return L.marker(w.latLng, { icon: this.startIcon, draggable: true });
+          }
+          if(i === num - 1) {
+            return L.marker(w.latLng, { icon: this.endIcon, draggable: true });
+          }
+          else {
+            return L.marker(w.latLng, { draggable: true });
+          }
+        }
+      })
+    }).on('routesfound', (e: L.Routing.RoutingResultEvent) => {    
+      const firstRoute = e.routes?.at(0);
+      this.routeFoundSubject.next(firstRoute?.coordinates);
     }).addTo(this.map);
+  }
+
+  setEndRoutePoint(latLng: L.LatLngExpression) {
+    const pointsLen = this.routingControl.getWaypoints().length;
+    const deleteNum = pointsLen <= 1 ? 0 : 1;
+    this.routingControl.spliceWaypoints(pointsLen - 1, deleteNum, L.Routing.waypoint(L.latLng(latLng)));
   }
 
   updateDetailsRoute(startLatLng: L.LatLngExpression, endLatLng: L.LatLngExpression, route: L.LatLngExpression[]) {

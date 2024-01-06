@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
 import { MapService } from '../../map/map.service';
 import { LeafletMouseEvent } from 'leaflet';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-track-route',
@@ -10,9 +11,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./new-track-route.component.css'],
   providers: [MapService]
 })
-export class NewTrackRouteComponent implements OnInit, AfterViewInit {
+export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('map') mapEl: ElementRef<HTMLElement>;
+
+  routeFound = false;
+
+  private subs: Subscription[] = [];
 
   constructor(
     private service: NewTrackService,
@@ -24,16 +29,27 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit {
     if(!this.service.startLatLng) {
       this.router.navigate(['tracks', 'new', 'start']);
     }
+
+    this.subs.push(this.mapService.routeFound$.subscribe({
+      next: (coords) => {
+        this.service.route = coords;
+        this.routeFound = true;
+      }
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   ngAfterViewInit(): void {
     this.mapService.initializeMap(this.mapEl.nativeElement);
     this.mapService.addRoutingMachine(this.service.startLatLng);
 
-    this.mapService.addRouteCreation(
-      this.service.startLatLng,
-      this.service.route
-    );
+    // this.mapService.addRouteCreation(
+    //   this.service.startLatLng,
+    //   this.service.route
+    // );
 
     this.mapService.setView(this.service.startLatLng);
 
@@ -41,17 +57,21 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit {
   }
 
   onMapClick = (e: LeafletMouseEvent) => {
-    this.mapService.addRoutePoint(e.latlng);
-    this.service.route.push([e.latlng.lat, e.latlng.lng]);
+    if(!e.latlng) {
+      console.log("onMapClick latlng is null");
+      return;
+    }
+    //this.mapService.addRoutePoint(e.latlng);
+    this.mapService.setEndRoutePoint(e.latlng);
   }
 
-  undoClick() {
-    this.mapService.removeLastRoutePoint();
-    this.service.route.pop();
-  }
+  // undoClick() {
+  //   this.mapService.removeLastRoutePoint();
+  //   this.service.route.pop();
+  // }
 
   canClickNext() {
-    return !!this.service.route && this.service.route.length > 0;;
+    return this.routeFound;
   }
 
   backClick() {
@@ -59,6 +79,7 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit {
   }
 
   nextClick() {
+    
     this.router.navigate(['tracks', 'new', 'info'])
   }
 }

@@ -37,7 +37,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
     this.map.updateDetailsRoute(
       this.service.startLatLng,
       this.service.route.at(-1),
-      [this.service.startLatLng, ...this.service.route]
+      this.service.route
     );
   }
   
@@ -46,7 +46,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
       this.service.trackName, 
       this.service.trackDesc, 
       this.service.startLatLng, 
-      [this.service.startLatLng, ...this.service.route]
+      this.service.route
       ).subscribe({
         next: () => {
           console.log("Successfully created new Track.");
