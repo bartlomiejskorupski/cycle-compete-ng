@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
 import { environment } from "src/environments/environment";
 
@@ -45,8 +45,29 @@ export class MapService implements OnDestroy {
   private routeFoundSubject = new Subject<L.LatLng[]>();
   routeFound$ = this.routeFoundSubject.asObservable();
 
-  private startIcon: L.Icon;
-  private endIcon: L.Icon;
+  private startIcon = L.icon({
+    iconUrl: 'assets/map/marker-icon-start.png',
+    shadowUrl: 'assets/map/marker-shadow.png',
+    iconAnchor: [12, 40],
+    shadowAnchor: [12, 40],
+    popupAnchor: [0, -40]
+  });
+
+  private endIcon = L.icon({
+    iconUrl: 'assets/map/marker-icon-end.png',
+    shadowUrl: 'assets/map/marker-shadow.png',
+    iconAnchor: [12, 40],
+    shadowAnchor: [12, 40],
+    popupAnchor: [0, -40]
+  });
+
+  private userIcon = L.icon({
+    iconUrl: 'assets/map/marker-icon-user.png',
+    shadowUrl: 'assets/map/marker-shadow.png',
+    iconAnchor: [12, 40],
+    shadowAnchor: [12, 40],
+    popupAnchor: [0, -40]
+  });
 
   constructor() {}
 
@@ -65,20 +86,6 @@ export class MapService implements OnDestroy {
 
     L.Icon.Default.imagePath = 'assets/map/';
     L.control.scale().addTo(this.map);
-
-    this.startIcon = L.icon({
-      iconUrl: 'assets/map/marker-icon-start.png',
-      shadowUrl: 'assets/map/marker-shadow.png',
-      iconAnchor: [12, 40],
-      shadowAnchor: [12, 40]
-    });
-
-    this.endIcon = L.icon({
-      iconUrl: 'assets/map/marker-icon-end.png',
-      shadowUrl: 'assets/map/marker-shadow.png',
-      iconAnchor: [12, 40],
-      shadowAnchor: [12, 40]
-    });
   }
 
   private addTileLayer() {
@@ -91,7 +98,7 @@ export class MapService implements OnDestroy {
   addGeolocation(): Observable<boolean> {
     this.geolocation = {
       circle: L.circle([0, 0]),
-      marker: L.marker([0, 0]),
+      marker: L.marker([0, 0], { icon: this.userIcon }),
       lastLatLng: null,
       watchId: null,
       loadingSubject: new Subject()

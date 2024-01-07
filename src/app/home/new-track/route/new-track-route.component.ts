@@ -43,6 +43,10 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit(): void {
+    if(!this.service.startLatLng) {
+      return;
+    }
+
     this.mapService.initializeMap(this.mapEl.nativeElement);
     this.mapService.addRoutingMachine(this.service.startLatLng);
 
