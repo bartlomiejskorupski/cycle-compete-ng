@@ -1,22 +1,23 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
 import { MapService } from '../../map/map.service';
 import { LeafletMouseEvent } from 'leaflet';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-track-route',
   templateUrl: './new-track-route.component.html',
-  styleUrls: ['./new-track-route.component.css']
+  styleUrls: ['./new-track-route.component.css'],
+  providers: [MapService]
 })
-export class NewTrackRouteComponent implements OnInit, AfterViewInit {
+export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('map') mapEl: ElementRef<HTMLElement>;
-  private map: L.Map;
 
-  startMarker: L.CircleMarker;
-  route: { latLng: L.LatLng, marker: L.CircleMarker}[] = [];
-  routeLine: L.Polyline;
+  routeFound = false;
+
+  private subs: Subscription[] = [];
 
   constructor(
     private service: NewTrackService,
@@ -28,52 +29,61 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit {
     if(!this.service.startLatLng) {
       this.router.navigate(['tracks', 'new', 'start']);
     }
+
+    this.subs.push(this.mapService.routeFound$.subscribe({
+      next: (coords) => {
+        this.service.route = coords;
+        this.routeFound = true;
+      }
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
   }
 
   ngAfterViewInit(): void {
-    this.map = this.mapService.createMap(this.mapEl.nativeElement);
+    if(!this.service.startLatLng) {
+      return;
+    }
 
-    const startLatLng = this.service.startLatLng;
+    this.mapService.initializeMap(this.mapEl.nativeElement);
+    this.mapService.addRoutingMachine(this.service.startLatLng);
 
-    this.startMarker = this.mapService.createCircleMarker(startLatLng, { radius: 10, color: 'red' });
+    // this.mapService.addRouteCreation(
+    //   this.service.startLatLng,
+    //   this.service.route
+    // );
 
-    this.routeLine = this.mapService.createPolyline([startLatLng]);
+    this.mapService.setView(this.service.startLatLng);
 
-    this.service.route.forEach(latLng => this.addRoutePoint(latLng));
-
-    this.mapService.addLayer(this.map, this.startMarker, this.routeLine);
-    this.map.setView(startLatLng);
-
-    this.map.on("click", this.onMapClick);
+    this.mapService.onClick(this.onMapClick);
   }
 
   onMapClick = (e: LeafletMouseEvent) => {
-    this.addRoutePoint(e.latlng);
-    this.service.route.push(e.latlng);
-  }
-
-  private addRoutePoint(latLng: L.LatLng) {
-    const marker = this.mapService.createCircleMarker(latLng, { radius: 5 });
-    this.mapService.addLayer(this.map, marker);
-    this.routeLine.addLatLng(latLng);
-
-    this.route.push({
-      latLng: latLng,
-      marker: marker
-    });
-  }
-
-  removeLastPoint() {
-    const lastPoint = this.route.pop();
-    if(!lastPoint)
+    if(!e.latlng) {
+      console.log("onMapClick latlng is null");
       return;
-
-    this.map.removeLayer(lastPoint.marker);
-    const routeLineLatLngs = this.routeLine.getLatLngs();
-    routeLineLatLngs.pop();
-    this.routeLine.setLatLngs(routeLineLatLngs);
-
-    this.service.route.pop();
+    }
+    //this.mapService.addRoutePoint(e.latlng);
+    this.mapService.setEndRoutePoint(e.latlng);
   }
 
+  // undoClick() {
+  //   this.mapService.removeLastRoutePoint();
+  //   this.service.route.pop();
+  // }
+
+  canClickNext() {
+    return this.routeFound;
+  }
+
+  backClick() {
+    this.router.navigate(['tracks', 'new', 'start']);
+  }
+
+  nextClick() {
+    
+    this.router.navigate(['tracks', 'new', 'info'])
+  }
 }

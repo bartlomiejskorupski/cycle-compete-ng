@@ -1,18 +1,30 @@
-<div class="surface-card border-round flex flex-column p-3 gap-2 h-full">
-  <div class="flex-none font-bold text-center text-lg">
+<div class="surface-card border-round flex flex-column h-full">
+  <div class="flex-none py-1 font-bold text-center text-lg">
     Choose a route
   </div>
   <div class="flex-grow-1 relative">
     <div class="absolute right-0 top-0 z-1 m-2">
-      <button pButton
+      <!-- <button pButton
         icon="pi pi-chevron-left"
         class="p-button-rounded p-button-secondary"
-        (click)="removeLastPoint()">
-      </button>
+        (click)="undoClick()">
+      </button> -->
     </div>
     <div id="map" #map
       class="h-full z-0">
     </div>
   </div>
-
+  <div class=" flex-none flex gap-1 px-1 py-1">
+    <button pButton
+      label="Back"
+      class="p-button-secondary w-full"
+      (click)="backClick()">
+    </button>
+    <button pButton
+      class="w-full"
+      label="Next"
+      [disabled]="!canClickNext()" 
+      (click)="nextClick()">
+    </button>
+  </div>
 </div>

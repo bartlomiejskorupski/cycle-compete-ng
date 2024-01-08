@@ -1,15 +1,30 @@
-<div class="surface-card border-round flex flex-column p-3 gap-2">
-  <div class="text-center font-bold text-xl mb-2">Information</div>
-  <label for="track-name">Track name</label>
-  <input id="track-name" 
-    type="text" 
-    pInputText 
-    [(ngModel)]="trackName"
-    (keyup)="onTrackNameKeyUp()"/>
-  <label for="description">Description (optional)</label>
-  <input id="description" 
-    type="text" 
-    pInputText
-    [(ngModel)]="trackDesc"
-    (keyup)="onTrackDescKeyUp()"/>
+<div class="h-full flex flex-column">
+  <div class="flex-none surface-card border-round flex flex-column p-3 gap-2">
+    <div class="text-center font-bold text-xl mb-2">Information</div>
+    <label for="track-name">Track name</label>
+    <input id="track-name" 
+      type="text" 
+      pInputText 
+      [(ngModel)]="trackName"
+      (keyup)="onTrackNameKeyUp()"/>
+    <label for="description">Description (optional)</label>
+    <input id="description" 
+      type="text" 
+      pInputText
+      [(ngModel)]="trackDesc"
+      (keyup)="onTrackDescKeyUp()"/>
+  </div>
+  <div class="flex-none flex gap-1 px-1 py-2">
+    <button pButton
+      label="Back"
+      class="p-button-secondary w-full"
+      (click)="backClick()">
+    </button>
+    <button pButton
+      class="w-full"
+      label="Next"
+      [disabled]="!canClickNext()" 
+      (click)="nextClick()">
+    </button>
+  </div>
 </div>

@@ -1,0 +1,58 @@
+<div class="flex flex-column h-screen-dynamic surface-ground">
+  <div class="flex-none surface-card flex">
+    <div class="flex-1 flex justify-content-start align-items-center">
+      <p-button 
+        icon="pi pi-stop-circle"
+        iconPos="right"
+        styleClass="p-button custom-button-danger text-white font-bold text-lg m-2"
+        label="Stop">
+      </p-button>
+    </div>
+    <div class="flex-1 text-center select-none flex flex-column justify-content-center text-4xl">
+      00:21:19
+    </div>
+    <div class="flex-1 flex justify-content-end align-items-center gap-1">
+      <div class="text-2xl">
+        {{ speed }}
+      </div>
+      <div class="pr-2 text-md">km/h</div>
+      <!-- <div class="pr-2 text-xs">
+        <div class="">km</div>
+        <hr class="m-0">
+        <div class="text-center">h</div>
+      </div> -->
+    </div>
+  </div>
+  <div class="flex-grow-1 text-700">
+    <div class="h-full relative">
+      <div class="z-0 h-full" id="map" #map></div>
+      <div class="absolute bottom-0 right-0 mb-5 mr-2">
+        <p-button icon="pi pi-map-marker" 
+          styleClass="p-button-rounded p-button-lg p-4">
+        </p-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Track completed"
+  [showHeader]="false"
+  [visible]="true"
+  [modal]="true"
+  [draggable]="false" 
+  [resizable]="false" 
+  [dismissableMask]="false" 
+  [closable]="false"
+  maskStyleClass="bg-black-alpha-70"
+  styleClass="w-full">
+  <div class="mt-3 mb-4 text-4xl text-center font-bold">Track completed!</div>
+  <div class="mt-2 text-2xl text-center">Lake road</div>
+  <div class="mt-2 text-3xl text-center">Time: 00:21:19</div>
+  <div class="mt-5">
+    <p-button 
+      label="Ok"
+      styleClass="w-full text-xl font-bold">
+    </p-button>
+  </div>
+</p-dialog>

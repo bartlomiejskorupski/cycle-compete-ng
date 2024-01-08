@@ -1,9 +1,8 @@
 
 export class NewTrackService {
 
-  startLatLng: L.LatLng;
+  startLatLng: L.LatLngTuple;
 
-  // LatLngs without starting LatLng
   route: L.LatLng[] = [];
 
   trackName: string;

@@ -2,43 +2,38 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
 import { MapService } from '../../map/map.service';
 import { LeafletMouseEvent } from 'leaflet';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-track-start',
   templateUrl: './new-track-start.component.html',
-  styleUrls: ['./new-track-start.component.css']
+  styleUrls: ['./new-track-start.component.css'],
+  providers: [MapService]
 })
 export class NewTrackStartComponent implements AfterViewInit {
 
   @ViewChild('map') mapEl: ElementRef<HTMLElement>;
-  private map: L.Map;
-
-  private startMarker: L.Marker;
 
   constructor(
     private service: NewTrackService,
-    private mapService: MapService
+    private map: MapService,
+    private router: Router
   ) {}
 
   ngAfterViewInit(): void {
-    this.map = this.mapService.createMap(this.mapEl.nativeElement);
-    
-    this.startMarker = this.mapService.createMarker();
+    this.map.initializeMap(this.mapEl.nativeElement);
 
     if(!!this.service.startLatLng) {
-      this.startMarker.setLatLng(this.service.startLatLng);
-      this.mapService.addLayer(this.map, this.startMarker);   
+      this.map.updateMarker(this.service.startLatLng);
       this.map.setView(this.service.startLatLng, 18);
     }
     
-
-    this.map.on("click", this.onMapClick);
+    this.map.onClick(this.onMapClick);
   }
 
   onMapClick = (e: LeafletMouseEvent) => {
-    this.startMarker.setLatLng(e.latlng);
-    this.mapService.addLayer(this.map, this.startMarker);    
-    this.service.startLatLng = e.latlng;
+    this.map.updateMarker(e.latlng);
+    this.service.startLatLng = [e.latlng.lat, e.latlng.lng];
   }
 
   onNavigationClick() {
@@ -58,6 +53,18 @@ export class NewTrackStartComponent implements AfterViewInit {
   private navigationError = (err: GeolocationPositionError) => {
     console.log(err);
     // TODO
+  }
+
+  canClickNext() {
+    return !!this.service.startLatLng;
+  }
+
+  backClick() {
+    this.router.navigate(['home']);
+  }
+
+  nextClick() {
+    this.router.navigate(['tracks', 'new', 'route'])
   }
 
 }
