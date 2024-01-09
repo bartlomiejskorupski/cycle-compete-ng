@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
 import { environment } from "src/environments/environment";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MapService implements OnDestroy {
 
   private map: L.Map;
@@ -18,7 +18,7 @@ export class MapService implements OnDestroy {
   } = {};
 
   private trackPopupClickSubject = new Subject<number>();
-  trackPopupClick$ =this.trackPopupClickSubject.asObservable();
+  trackPopupClick$ = this.trackPopupClickSubject.asObservable();
 
   private geolocation?: { 
     marker: L.Marker, 
@@ -79,8 +79,13 @@ export class MapService implements OnDestroy {
   }
 
   initializeMap(element: HTMLElement, opt?: { view?: L.LatLngExpression, zoom?: number }): void {
+    this.trackMarkers = {};
+    
+    const view = opt?.view ?? this.map?.getCenter() ?? [54.370978, 18.612741];
+    const zoom = opt?.zoom ?? this.map?.getZoom() ?? 18;
+
     this.map = L.map(element, { zoomSnap: 1.0 })
-      .setView(opt?.view ?? [54.370978, 18.612741], opt?.zoom ?? 18);
+      .setView(view, zoom);
 
     this.addTileLayer();
 
@@ -219,6 +224,10 @@ export class MapService implements OnDestroy {
       { enableHighAccuracy: true, timeout: 3000 }
     );
     console.log('Geolocation WatchId set');
+  }
+
+  removeGeolocation() {
+    navigator.geolocation.clearWatch(this.geolocation.watchId);
   }
 
   private geolocationSuccess = (pos: GeolocationPosition): void => {

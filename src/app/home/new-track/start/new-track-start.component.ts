@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
   selector: 'app-new-track-start',
   templateUrl: './new-track-start.component.html',
   styleUrls: ['./new-track-start.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class NewTrackStartComponent implements AfterViewInit {
 

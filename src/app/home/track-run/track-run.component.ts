@@ -5,7 +5,7 @@ import { MapService } from '../map/map.service';
   selector: 'app-track-run',
   templateUrl: './track-run.component.html',
   styleUrls: ['./track-run.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 

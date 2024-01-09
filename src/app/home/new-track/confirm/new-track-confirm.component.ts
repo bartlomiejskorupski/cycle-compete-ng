@@ -9,7 +9,7 @@ import { MapService } from '../../map/map.service';
   selector: 'app-new-track-confirm',
   templateUrl: './new-track-confirm.component.html',
   styleUrls: ['./new-track-confirm.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
 

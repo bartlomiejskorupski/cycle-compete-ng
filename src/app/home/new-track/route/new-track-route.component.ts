@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-new-track-route',
   templateUrl: './new-track-route.component.html',
   styleUrls: ['./new-track-route.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 

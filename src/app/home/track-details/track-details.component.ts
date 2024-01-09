@@ -11,7 +11,7 @@ import { GetTrackRunResponse } from 'src/app/shared/service/track-run/model/get-
   selector: 'app-track-details',
   templateUrl: './track-details.component.html',
   styleUrls: ['./track-details.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
