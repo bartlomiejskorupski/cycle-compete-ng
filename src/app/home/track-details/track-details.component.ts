@@ -7,6 +7,7 @@ import { TrackService } from 'src/app/shared/service/track/track.service';
 import { MapService } from '../map/map.service';
 import { GetTrackRunResponse } from 'src/app/shared/service/track-run/model/get-track-run-response.model';
 import { MessageService } from 'primeng/api';
+import { UserDataService } from 'src/app/shared/service/user-data.service';
 
 @Component({
   selector: 'app-track-details',
@@ -18,6 +19,7 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('map') mapEl: ElementRef<HTMLDivElement>;
 
+  deleteTrackAllowed = true;
   deleteDialogVisible = false;
   deleteDialogLoading = false;
 
@@ -32,13 +34,17 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     private trackRunService: TrackRunService,
     private mapService: MapService,
     private router: Router,
-    private messages: MessageService
+    private messages: MessageService,
+    private userService: UserDataService
   ) {}
 
   ngOnInit(): void {
     this.sub = this.route.paramMap.pipe(
       mergeMap(params => this.trackService.getTrack(+params.get('id'))),
-      tap(trackRes => this.track = trackRes),
+      tap(trackRes => {
+        this.track = trackRes;
+        this.deleteTrackAllowed = this.track.creatorId === this.userService.user.id || this.userService.user.role === 'ADMIN' ? false : true;
+      }),
       mergeMap(trackRes => this.trackRunService.getBestTrackRuns(trackRes.id)),
       tap(_ => {
         this.trackRuns = [

@@ -48,7 +48,8 @@
             <button pButton
               class="w-full custom-button-danger font-bold"
               label="Delete"
-              (click)="deleteTrackClick()">
+              (click)="deleteTrackClick()"
+              [disabled]="deleteTrackAllowed">
             </button>
           </div>
         </div>

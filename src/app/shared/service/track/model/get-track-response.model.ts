@@ -2,6 +2,7 @@ import { TrackPointResponse } from "./track-point-response.model";
 
 export interface GetTrackResponse {
   id: number;
+  creatorId: number;
   userFirstname: string;
   userLastname: string;
   name: string;
