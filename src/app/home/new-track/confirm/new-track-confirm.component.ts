@@ -9,7 +9,7 @@ import { MapService } from '../../map/map.service';
   selector: 'app-new-track-confirm',
   templateUrl: './new-track-confirm.component.html',
   styleUrls: ['./new-track-confirm.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
 
@@ -32,10 +32,10 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
   }
   
   ngAfterViewInit(): void {
-    this.map.initializeMap(this.mapEl.nativeElement, { view: this.service.startLatLng });
+    this.map.initializeMap(this.mapEl.nativeElement, { view: this.service.route.at(0) });
 
     this.map.updateDetailsRoute(
-      this.service.startLatLng,
+      this.service.route.at(0),
       this.service.route.at(-1),
       this.service.route
     );
@@ -44,8 +44,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
   onConfirmClick() {
     this.trackService.createTrack(
       this.service.trackName, 
-      this.service.trackDesc, 
-      this.service.startLatLng, 
+      this.service.trackDesc,
       this.service.route
       ).subscribe({
         next: () => {

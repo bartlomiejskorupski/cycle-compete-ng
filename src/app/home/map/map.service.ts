@@ -1,11 +1,11 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
 import { environment } from "src/environments/environment";
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class MapService implements OnDestroy {
 
   private map: L.Map;
@@ -18,7 +18,7 @@ export class MapService implements OnDestroy {
   } = {};
 
   private trackPopupClickSubject = new Subject<number>();
-  trackPopupClick$ =this.trackPopupClickSubject.asObservable();
+  trackPopupClick$ = this.trackPopupClickSubject.asObservable();
 
   private geolocation?: { 
     marker: L.Marker, 
@@ -45,8 +45,29 @@ export class MapService implements OnDestroy {
   private routeFoundSubject = new Subject<L.LatLng[]>();
   routeFound$ = this.routeFoundSubject.asObservable();
 
-  private startIcon: L.Icon;
-  private endIcon: L.Icon;
+  private startIcon = L.icon({
+    iconUrl: 'assets/map/marker-icon-start.png',
+    shadowUrl: 'assets/map/marker-shadow.png',
+    iconAnchor: [12, 40],
+    shadowAnchor: [12, 40],
+    popupAnchor: [0, -40]
+  });
+
+  private endIcon = L.icon({
+    iconUrl: 'assets/map/marker-icon-end.png',
+    shadowUrl: 'assets/map/marker-shadow.png',
+    iconAnchor: [12, 40],
+    shadowAnchor: [12, 40],
+    popupAnchor: [0, -40]
+  });
+
+  private userIcon = L.icon({
+    iconUrl: 'assets/map/marker-icon-user.png',
+    shadowUrl: 'assets/map/marker-shadow.png',
+    iconAnchor: [12, 40],
+    shadowAnchor: [12, 40],
+    popupAnchor: [0, -40]
+  });
 
   constructor() {}
 
@@ -58,27 +79,18 @@ export class MapService implements OnDestroy {
   }
 
   initializeMap(element: HTMLElement, opt?: { view?: L.LatLngExpression, zoom?: number }): void {
+    this.trackMarkers = {};
+    
+    const view = opt?.view ?? this.map?.getCenter() ?? [54.370978, 18.612741];
+    const zoom = opt?.zoom ?? this.map?.getZoom() ?? 18;
+
     this.map = L.map(element, { zoomSnap: 1.0 })
-      .setView(opt?.view ?? [54.370978, 18.612741], opt?.zoom ?? 18);
+      .setView(view, zoom);
 
     this.addTileLayer();
 
     L.Icon.Default.imagePath = 'assets/map/';
     L.control.scale().addTo(this.map);
-
-    this.startIcon = L.icon({
-      iconUrl: 'assets/map/marker-icon-start.png',
-      shadowUrl: 'assets/map/marker-shadow.png',
-      iconAnchor: [12, 40],
-      shadowAnchor: [12, 40]
-    });
-
-    this.endIcon = L.icon({
-      iconUrl: 'assets/map/marker-icon-end.png',
-      shadowUrl: 'assets/map/marker-shadow.png',
-      iconAnchor: [12, 40],
-      shadowAnchor: [12, 40]
-    });
   }
 
   private addTileLayer() {
@@ -91,7 +103,7 @@ export class MapService implements OnDestroy {
   addGeolocation(): Observable<boolean> {
     this.geolocation = {
       circle: L.circle([0, 0]),
-      marker: L.marker([0, 0]),
+      marker: L.marker([0, 0], { icon: this.userIcon }),
       lastLatLng: null,
       watchId: null,
       loadingSubject: new Subject()
@@ -184,9 +196,9 @@ export class MapService implements OnDestroy {
     this.addLayer(this.detailsRoute?.routeStartMarker, this.detailsRoute?.routeLine, this.detailsRoute?.routeEndMarker);
   }
 
-  updatePolyline(latLngs: L.LatLngExpression[]) {
+  updatePolyline(latLngs: L.LatLngExpression[], opt?: L.PolylineOptions) {
     this.removeLayer(this.polyline);
-    this.polyline = L.polyline(latLngs);
+    this.polyline = L.polyline(latLngs, opt);
     this.addLayer(this.polyline);
   }
 
@@ -214,6 +226,10 @@ export class MapService implements OnDestroy {
     console.log('Geolocation WatchId set');
   }
 
+  removeGeolocation() {
+    navigator.geolocation.clearWatch(this.geolocation.watchId);
+  }
+
   private geolocationSuccess = (pos: GeolocationPosition): void => {
     const { latitude, longitude, accuracy } = pos.coords;
     const latLng: L.LatLngExpression = [latitude, longitude];
@@ -235,6 +251,11 @@ export class MapService implements OnDestroy {
     console.error('Geolocation error: ', err.code, err.message);
     // alert(`Geolocation error: ${err.code} ${err.message}`);
     this.geolocation.loadingSubject.next(false);
+    if(err.code === err.PERMISSION_DENIED) {
+      alert('To use navigation, allow access to location.');
+      navigator.geolocation.clearWatch(this.geolocation.watchId);
+      this.geolocation.watchId = null;
+    }
   }
 
   updateTrackMarkers(tracks: GetTracksResponseTrack[]) {

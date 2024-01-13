@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, mergeMap, tap } from 'rxjs';
 import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
@@ -13,7 +14,7 @@ import { UserDataService } from 'src/app/shared/service/user-data.service';
   selector: 'app-track-details',
   templateUrl: './track-details.component.html',
   styleUrls: ['./track-details.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -78,6 +79,14 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     const routeLatLngs: [number, number][] = this.track.trackPoints.map(p => [p.latitude, p.longitude]);
     
     this.mapService.updateDetailsRoute(startLatLng, endLatLng, routeLatLngs);
+  }
+
+  startClick() {
+    this.router.navigate(['run'], {
+      queryParams: {
+        trackId: this.track.id
+      }
+    });
   }
 
   deleteTrackClick() {

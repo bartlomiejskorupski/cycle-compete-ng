@@ -12,7 +12,7 @@ import { TrackService } from 'src/app/shared/service/track/track.service';
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -58,6 +58,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(sub => sub.unsubscribe());
+    this.mapService.removeGeolocation();
   }
 
   ngAfterViewInit(): void {

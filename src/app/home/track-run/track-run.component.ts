@@ -1,11 +1,17 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MapService } from '../map/map.service';
+import { GeolocationService } from 'src/app/shared/service/geolocation.service';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription, exhaustMap, interval, map } from 'rxjs';
+import { TrackService } from 'src/app/shared/service/track/track.service';
+import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
+import { formatTimer } from 'src/app/shared/utils/date-utils';
 
 @Component({
   selector: 'app-track-run',
   templateUrl: './track-run.component.html',
   styleUrls: ['./track-run.component.css'],
-  providers: [MapService]
+  //providers: [MapService]
 })
 export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -14,49 +20,84 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   routeLine: L.Polyline;
   userMarker: L.CircleMarker;
 
-  speed = 8.2;
+  started = true;
+  startTime = new Date();
+  timeNow = new Date();
+  speed = 0;
+  position: L.LatLngTuple;
+
+  subs: Subscription[] = [];
 
   constructor(
-    private mapService: MapService
-  ) {}
+    private map: MapService,
+    private geo: GeolocationService,
+    private route: ActivatedRoute,
+    private trackService: TrackService
+  ) { }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(s => s.unsubscribe());
+  }
 
   ngOnInit(): void {
-    
+    this.subs.push(
+      this.geo.position$.subscribe(this.handleGeoSuccess.bind(this)),
+      this.geo.error$.subscribe(this.handleGeoError.bind(this)),
+      interval(100).subscribe(() => this.timeNow = new Date())
+    );
+    this.geo.watchPosition();
   }
 
   ngAfterViewInit(): void {
-    this.mapService.initializeMap(this.mapEl.nativeElement);
-    
-    // const userLatLng = this.mapService.createLatLon(54.32579184150523, 18.568514585495);
-    // this.userMarker = this.mapService.createCircleMarker(userLatLng, {
-    //   radius: 10,
-    //   fillOpacity: 0.9,
-    //   color: '#00b0e6',
-    //   fillColor: '#03c6fc'
-    // });
+    this.map.initializeMap(this.mapEl.nativeElement);
 
-    this.mapService.setView([54.32189592894544, 18.56832967088849], 19);
-
-    this.mapService.updatePolyline([
-      [54.32189592894544, 18.56832967088849],
-      [54.32206432527174, 18.56870770454407],
-      [54.322069156652155, 18.568891988297764],
-      [54.32255055532336, 18.568878103724277],
-      [54.322883028915015, 18.56883676596226],
-      [54.32331660627259, 18.56875046207279],
-      [54.32491796949941, 18.56841250377784],
-      [54.325090764684276, 18.568394201638515],
-      [54.3253272186472, 18.568401932716373],
-      [54.32558442196704, 18.56843475023084],
-      [54.32571200860365, 18.568468987941745],
-      [54.325793329550564, 18.568519003245004],
-    ]);
+    this.subs.push(
+      this.route.queryParams.pipe(
+        map(params => +params['trackId']),
+        exhaustMap(trackId => this.trackService.getTrack(trackId))
+      ).subscribe(this.handleTrackChange.bind(this))
+    );
   }
 
-  ngOnDestroy(): void {
-    
+  private handleTrackChange(res: GetTrackResponse) {
+    this.map.setView([res.startLatitude, res.startLongitude], 19);
+    const route = res.trackPoints.map(tp => [tp.latitude, tp.longitude] as L.LatLngExpression);
+    this.map.updatePolyline(route, { color: 'red' });
   }
 
-  
+  private handleGeoSuccess(pos: GeolocationPosition) {
+    this.speed = this.metersPerSecondToKmph(pos.coords.speed);
+    this.position = [pos.coords.latitude, pos.coords.longitude];
+    this.map.updateMarker(this.position);
+  }
+
+  private handleGeoError(err: GeolocationPositionError) {
+    if(err.code === err.PERMISSION_DENIED) {
+      console.error('Geolocation Error', err.code, 'Permission denied');
+      alert('To use navigation, allow access to location.');
+    }
+    else if(err.code === err.POSITION_UNAVAILABLE) {
+      console.error('Geolocation Error', err.code, 'Position Unavailable');
+    }
+    else if(err.code === err.TIMEOUT) {
+      console.error('Geolocation Error', err.code, 'Timeout');
+    }
+  }
+
+  getTimerText(): string {
+    if(!this.started) {
+      return '00:00:00';
+    }
+    return formatTimer(this.startTime, this.timeNow);
+  }
+
+  private metersPerSecondToKmph(mps: number): number {
+    return mps*3600/1000;
+  }
+
+  navigationClick() {
+    if(!!this.position)
+      this.map.setView(this.position);
+  }
 
 }

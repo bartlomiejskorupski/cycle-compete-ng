@@ -42,7 +42,8 @@
           <div class="flex-none flex flex-column gap-1 px-1 py-1">
             <p-button
               styleClass="w-full font-bold" 
-              routerLink="/run"
+              (onClick)="startClick()"
+              [disabled]="!track?.id"
               label="Start">
             </p-button>
             <button pButton
