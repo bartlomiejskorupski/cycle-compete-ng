@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, mergeMap, tap } from 'rxjs';
 import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
@@ -27,6 +27,7 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     private trackService: TrackService,
     private trackRunService: TrackRunService,
     private mapService: MapService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +67,14 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     const routeLatLngs: [number, number][] = this.track.trackPoints.map(p => [p.latitude, p.longitude]);
     
     this.mapService.updateDetailsRoute(startLatLng, endLatLng, routeLatLngs);
+  }
+
+  startClick() {
+    this.router.navigate(['run'], {
+      queryParams: {
+        trackId: this.track.id
+      }
+    });
   }
 
 }

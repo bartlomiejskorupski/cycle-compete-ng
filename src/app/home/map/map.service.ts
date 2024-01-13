@@ -196,9 +196,9 @@ export class MapService implements OnDestroy {
     this.addLayer(this.detailsRoute?.routeStartMarker, this.detailsRoute?.routeLine, this.detailsRoute?.routeEndMarker);
   }
 
-  updatePolyline(latLngs: L.LatLngExpression[]) {
+  updatePolyline(latLngs: L.LatLngExpression[], opt?: L.PolylineOptions) {
     this.removeLayer(this.polyline);
-    this.polyline = L.polyline(latLngs);
+    this.polyline = L.polyline(latLngs, opt);
     this.addLayer(this.polyline);
   }
 
@@ -251,6 +251,11 @@ export class MapService implements OnDestroy {
     console.error('Geolocation error: ', err.code, err.message);
     // alert(`Geolocation error: ${err.code} ${err.message}`);
     this.geolocation.loadingSubject.next(false);
+    if(err.code === err.PERMISSION_DENIED) {
+      alert('To use navigation, allow access to location.');
+      navigator.geolocation.clearWatch(this.geolocation.watchId);
+      this.geolocation.watchId = null;
+    }
   }
 
   updateTrackMarkers(tracks: GetTracksResponseTrack[]) {

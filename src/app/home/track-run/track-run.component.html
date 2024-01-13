@@ -9,18 +9,13 @@
       </p-button>
     </div>
     <div class="flex-1 text-center select-none flex flex-column justify-content-center text-4xl">
-      00:21:19
+      {{ getTimerText() }}
     </div>
     <div class="flex-1 flex justify-content-end align-items-center gap-1">
       <div class="text-2xl">
-        {{ speed }}
+        {{ speed | number:'0.1-1' }}
       </div>
       <div class="pr-2 text-md">km/h</div>
-      <!-- <div class="pr-2 text-xs">
-        <div class="">km</div>
-        <hr class="m-0">
-        <div class="text-center">h</div>
-      </div> -->
     </div>
   </div>
   <div class="flex-grow-1 text-700">
@@ -28,7 +23,8 @@
       <div class="z-0 h-full" id="map" #map></div>
       <div class="absolute bottom-0 right-0 mb-5 mr-2">
         <p-button icon="pi pi-map-marker" 
-          styleClass="p-button-rounded p-button-lg p-4">
+          styleClass="p-button-rounded p-button-lg p-4"
+          (onClick)="navigationClick()">
         </p-button>
       </div>
     </div>
@@ -38,7 +34,7 @@
 <p-dialog
   header="Track completed"
   [showHeader]="false"
-  [visible]="true"
+  [visible]="false"
   [modal]="true"
   [draggable]="false" 
   [resizable]="false" 
