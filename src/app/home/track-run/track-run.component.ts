@@ -2,9 +2,10 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { MapService } from '../map/map.service';
 import { GeolocationService } from 'src/app/shared/service/geolocation.service';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription, exhaustMap, map } from 'rxjs';
+import { Subscription, exhaustMap, interval, map } from 'rxjs';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
+import { formatTimer } from 'src/app/shared/utils/date-utils';
 
 @Component({
   selector: 'app-track-run',
@@ -19,6 +20,7 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   routeLine: L.Polyline;
   userMarker: L.CircleMarker;
 
+  started = true;
   startTime = new Date();
   timeNow = new Date();
   speed = 0;
@@ -40,7 +42,8 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.subs.push(
       this.geo.position$.subscribe(this.handleGeoSuccess.bind(this)),
-      this.geo.error$.subscribe(this.handleGeoError.bind(this))
+      this.geo.error$.subscribe(this.handleGeoError.bind(this)),
+      interval(100).subscribe(() => this.timeNow = new Date())
     );
     this.geo.watchPosition();
   }
@@ -63,7 +66,6 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private handleGeoSuccess(pos: GeolocationPosition) {
-    console.log(new Date(pos.timestamp).toLocaleTimeString());
     this.speed = this.metersPerSecondToKmph(pos.coords.speed);
     this.position = [pos.coords.latitude, pos.coords.longitude];
     this.map.updateMarker(this.position);
@@ -83,12 +85,10 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getTimerText(): string {
-    // TODO
-    if(!this.startTime) {
+    if(!this.started) {
       return '00:00:00';
     }
-    //const diff = this.timeNow.getTime() - this.startTime.getTime();
-    return '00:00:00';
+    return formatTimer(this.startTime, this.timeNow);
   }
 
   private metersPerSecondToKmph(mps: number): number {
