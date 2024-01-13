@@ -63,5 +63,7 @@ export class TrackService extends BaseHttpService{
     return this.getEnpoint<GetClosestTracksResponse>('/closest', params);
   }
 
-
+  deleteTrack(id: number) : Observable<any> {
+    return this.deleteEndpoint(`/${id}`);
+  }
 }
