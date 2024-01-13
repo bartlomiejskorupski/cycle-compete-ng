@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, mergeMap, tap } from 'rxjs';
 import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 import { MapService } from '../map/map.service';
 import { GetTrackRunResponse } from 'src/app/shared/service/track-run/model/get-track-run-response.model';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-track-details',
@@ -17,6 +18,9 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('map') mapEl: ElementRef<HTMLDivElement>;
 
+  deleteDialogVisible = false;
+  deleteDialogLoading = false;
+
   track: GetTrackResponse;
   trackRuns: GetTrackRunResponse[];
 
@@ -27,6 +31,8 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     private trackService: TrackService,
     private trackRunService: TrackRunService,
     private mapService: MapService,
+    private router: Router,
+    private messages: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +72,46 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     const routeLatLngs: [number, number][] = this.track.trackPoints.map(p => [p.latitude, p.longitude]);
     
     this.mapService.updateDetailsRoute(startLatLng, endLatLng, routeLatLngs);
+  }
+
+  deleteTrackClick() {
+    this.deleteDialogVisible = true;
+  }
+
+  deleteTrackDeclineClick() {
+    this.deleteDialogVisible = false;
+  }
+
+  deleteTrackConfirmClick() {
+    this.deleteDialogLoading = true;
+    this.trackService.deleteTrack(
+      Number(this.route.snapshot.paramMap.get('id'))
+      ).subscribe({
+        next: () => {
+          console.log("Successfully deleted track.");
+          this.messages.add({
+            severity: 'success',
+            detail: 'Track deleted!',
+            life: 5000
+          });
+
+          this.deleteDialogVisible = false;
+          this.deleteDialogLoading = false;
+
+          this.router.navigate(['home']);
+        },
+        error: err => {
+          console.log(err);
+          this.messages.add({
+            severity: 'error',
+            detail: err.message,
+            life: 15000
+          });
+
+          this.deleteDialogVisible = false;
+          this.deleteDialogLoading = false;
+        }
+      });
   }
 
 }
