@@ -20,14 +20,14 @@ export class GeolocationService implements OnDestroy {
     this.stopWatching();
   }
 
-  watchPosition() {
+  watchPosition(timeout?: number) {
     this.stopWatching();
 
     this.watchId = navigator.geolocation.watchPosition(
       pos => this.positionSubject.next(pos),
       err => this.errorSubject.next(err),
       {
-        timeout: 3000,
+        timeout: timeout ?? 5000,
         enableHighAccuracy: true
       }
     );

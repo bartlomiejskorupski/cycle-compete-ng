@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
+import { distanceToPath } from "src/app/shared/utils/distance-utils";
 import { environment } from "src/environments/environment";
 
 @Injectable({ providedIn: 'root' })
@@ -44,6 +45,8 @@ export class MapService implements OnDestroy {
 
   private routeFoundSubject = new Subject<L.LatLng[]>();
   routeFound$ = this.routeFoundSubject.asObservable();
+
+  private dottedLine: L.Polyline;
 
   private startIcon = L.icon({
     iconUrl: 'assets/map/marker-icon-start.png',
@@ -306,16 +309,41 @@ export class MapService implements OnDestroy {
     return cont;
   }
 
+  updateDottedLine(from: L.LatLngExpression, to: L.LatLngExpression) {
+    this.removeLayer(this.dottedLine);
+    this.dottedLine = L.polyline([from, to], {
+      dashArray: '10',
+      color: 'gray',
+      opacity: 0.8
+    });
+    this.addLayer(this.dottedLine);
+  }
+
+  removeDottedLine() {
+    this.removeLayer(this.dottedLine);
+  }
+
+  isOnPath(position: L.LatLngTuple, polylinePoints: L.LatLngTuple[], threshold = 10) {
+    const dist = distanceToPath(position, polylinePoints);
+    console.log('Distance from path:', dist, 'm');
+    return dist <= threshold;
+  }
+
   setView(center: L.LatLngExpression, zoom?: number, options?: L.ZoomPanOptions) {
     this.map.setView(center, zoom, options);
   }
-
+  
   setZoom(zoom: number, options?: L.ZoomPanOptions) {
     this.map.setZoom(zoom, options);
   }
-
+  
   getBounds(): L.LatLngBounds {
     return this.map.getBounds();
+  }
+
+  fitOnMap(latLngs: L.LatLngExpression[], opts?: L.FitBoundsOptions) {
+    const bounds = L.latLngBounds(latLngs);
+    this.map.fitBounds(bounds, opts);
   }
 
   onMove(fn: L.LeafletEventHandlerFn) {

@@ -1,0 +1,10 @@
+.instructions-container {
+  padding: .5rem .75rem;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: .5rem;
+}
+
+.instructions {
+  color: #000;
+  font-size: 1.25rem;
+}
