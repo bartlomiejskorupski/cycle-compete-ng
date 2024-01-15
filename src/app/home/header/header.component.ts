@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { SettingsService } from 'src/app/shared/service/settings.service';
 import { UserDataService } from 'src/app/shared/service/user-data.service';
 import { MapService } from '../../shared/service/map/map.service';
+import { User } from 'src/app/auth/model/user.model';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,8 @@ import { MapService } from '../../shared/service/map/map.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+
+  user: User;
 
   sidebarVisible = false;
 
@@ -34,11 +37,11 @@ export class HeaderComponent implements OnInit {
     
     this.onlyUserTracks = this.settings.getShowOnlyMyTracks();
     
-    const user = this.userData.user;
+    this.user = this.userData.user;
 
     this.userMenuItems = [
       {
-        label: `${user.firstname} ${user.lastname}`,
+        label: `${this.user.firstname} ${this.user.lastname}`,
         items: [
           { label: 'History', icon: 'pi pi-history', routerLink: '/history' },
           { label: 'Settings', icon: 'pi pi-cog', routerLink: '/settings' },
@@ -54,7 +57,7 @@ export class HeaderComponent implements OnInit {
 
   onChangeOnlyUserTracks() {
     this.settings.setShowOnlyMyTracks(this.onlyUserTracks);
-    this.map.showOnlyPrivateTracksChange(this.onlyUserTracks);
+    this.map.showOnlyPrivateTracksChange(this.onlyUserTracks, this.user.id);
   }
 
 }

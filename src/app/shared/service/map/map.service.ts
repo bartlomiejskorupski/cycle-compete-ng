@@ -30,7 +30,8 @@ export class MapService implements OnDestroy {
 
   initializeMap(element: HTMLElement, opt?: { view?: L.LatLngExpression, zoom?: number }): void {
     this.trackMarkers = {};
-    
+    this.lastTracks = [];
+
     const view = opt?.view ?? this.map?.getCenter() ?? [54.370978, 18.612741];
     const zoom = opt?.zoom ?? this.map?.getZoom() ?? 18;
 
@@ -209,25 +210,33 @@ export class MapService implements OnDestroy {
     [id: number]: L.Marker
   } = {};
 
+  private lastTracks: GetTracksResponseTrack[] = [];
+
   private trackPopupClickSubject = new Subject<number>();
   trackPopupClick$ = this.trackPopupClickSubject.asObservable();
 
-  updateTrackMarkers(tracks: GetTracksResponseTrack[]) {
-    tracks.forEach(trackRes => {
-      const existing = this.trackMarkers?.[trackRes.id];
-      if(!existing){
-        this.trackMarkers[trackRes.id] = this.createTrackMarker(trackRes);
-        this.addLayer(this.trackMarkers[trackRes.id]);
-        return;
-      }
-      this.trackMarkers[trackRes.id].setPopupContent(this.createTrackPopup(trackRes));
-    });
+  updateTrackMarkers(tracks: GetTracksResponseTrack[], onlyShowOfUserId?: number) {
+    let markers = Object.values(this.trackMarkers);
+    this.trackMarkers = {};
+    this.removeLayer(...markers);
     
+    this.lastTracks = tracks;
+
+    let filteredTracks = tracks;
+    if(onlyShowOfUserId) {
+      filteredTracks = tracks.filter(tRes => tRes.creatorId === onlyShowOfUserId);
+    }
+    
+    for(const trackRes of filteredTracks) {
+      this.trackMarkers[trackRes.id] = this.createTrackMarker(trackRes);
+      this.trackMarkers[trackRes.id].setPopupContent(this.createTrackPopup(trackRes));
+    }
+
+    this.addLayer(...Object.values(this.trackMarkers));
   }
-  
-  showOnlyPrivateTracksChange(val: boolean) {
-    console.log('Show only private tracks:', val);
-    // TODO
+
+  showOnlyPrivateTracksChange(val: boolean, userId: number) {
+    this.updateTrackMarkers(this.lastTracks, val ? userId : null);
   }
   
   private createTrackMarker(trackRes: GetTracksResponseTrack): L.Marker {

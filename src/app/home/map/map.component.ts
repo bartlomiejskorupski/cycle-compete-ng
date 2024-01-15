@@ -1,12 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Subject, Subscription, auditTime, catchError, exhaustMap, fromEvent, mergeMap, of } from 'rxjs';
+import { Subject, Subscription, auditTime, catchError, exhaustMap, mergeMap, of } from 'rxjs';
+import { User } from 'src/app/auth/model/user.model';
 import { MapService } from 'src/app/shared/service/map/map.service';
+import { SettingsService } from 'src/app/shared/service/settings.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
 import { GetTracksResponse } from 'src/app/shared/service/track/model/get-tracks-response.model';
-import { TrackPointResponse } from 'src/app/shared/service/track/model/track-point-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
+import { UserDataService } from 'src/app/shared/service/user-data.service';
 
 @Component({
   selector: 'app-map',
@@ -22,15 +24,21 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private mapUpdateSubject = new Subject<void>();
   private subs: Subscription[] = [];
 
+  private user: User;
+
   constructor(
     private mapService: MapService,
     private trackService: TrackService,
     private messages: MessageService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private settings: SettingsService,
+    private userData: UserDataService
   ) {}
 
   ngOnInit(): void {
+    this.user = this.userData.user;
+
     this.subs.push(
       this.mapUpdateSubject.pipe(
         auditTime(1000),
@@ -49,10 +57,15 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
             )
         )
       ).subscribe({
-        next: (res) => this.mapService.updateTrackMarkers(res.tracks),
+        next: this.updateTrackMarkers.bind(this),
         error: _ => console.log('ERROR: Map update observable ended.')
       })
     );
+  }
+
+  updateTrackMarkers(res: GetTracksResponse) {
+    const onlyUserTracks = this.settings.getShowOnlyMyTracks();
+    this.mapService.updateTrackMarkers(res.tracks, onlyUserTracks ? this.user.id : null);
   }
 
   ngOnDestroy(): void {
@@ -108,6 +121,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     );
   }
+
+
 
   geolocationClick(): void {
     this.mapService.geolocationClick();
