@@ -24,7 +24,7 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteDialogLoading = false;
 
   track: GetTrackResponse;
-  trackRuns: GetTrackRunResponse[];
+  trackRuns: GetTrackRunResponse[] = [];
 
   private sub: Subscription;
 
@@ -59,8 +59,6 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateMap() {
-    console.log(this.trackRuns);
-    
     this.mapService.setView([this.track.startLatitude, this.track.startLongitude]);
 
     const lastPoint = this.track.trackPoints[this.track.trackPoints.length - 1];
