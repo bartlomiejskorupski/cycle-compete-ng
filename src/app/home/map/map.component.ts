@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } fr
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Subject, Subscription, auditTime, catchError, exhaustMap, fromEvent, mergeMap, of } from 'rxjs';
-import { MapService } from 'src/app/shared/service/map.service';
+import { MapService } from 'src/app/shared/service/map/map.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
 import { GetTracksResponse } from 'src/app/shared/service/track/model/get-tracks-response.model';
 import { TrackPointResponse } from 'src/app/shared/service/track/model/track-point-response.model';

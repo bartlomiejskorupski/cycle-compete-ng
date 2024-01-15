@@ -3,7 +3,7 @@ import { NewTrackService } from '../new-track.service';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { MapService } from '../../../shared/service/map.service';
+import { MapService } from '../../../shared/service/map/map.service';
 
 @Component({
   selector: 'app-new-track-confirm',

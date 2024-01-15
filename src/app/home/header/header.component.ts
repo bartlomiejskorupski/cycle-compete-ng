@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { SettingsService } from 'src/app/shared/service/settings.service';
 import { UserDataService } from 'src/app/shared/service/user-data.service';
-import { MapService } from '../../shared/service/map.service';
+import { MapService } from '../../shared/service/map/map.service';
 
 @Component({
   selector: 'app-header',

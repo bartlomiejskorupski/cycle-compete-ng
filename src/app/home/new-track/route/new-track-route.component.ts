@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
-import { MapService } from '../../../shared/service/map.service';
+import { MapService } from '../../../shared/service/map/map.service';
 import { LeafletMouseEvent } from 'leaflet';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';

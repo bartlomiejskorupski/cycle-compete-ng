@@ -5,6 +5,7 @@ import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
 import { distanceToPath } from "src/app/shared/utils/distance-utils";
 import { environment } from "src/environments/environment";
+import { END_ICON, START_ICON, USER_ICON } from "./icons";
 
 @Injectable({ providedIn: 'root' })
 export class MapService implements OnDestroy {
@@ -14,29 +15,9 @@ export class MapService implements OnDestroy {
   private polyline: L.Polyline;
   private marker: L.Marker;
 
-  private startIcon = L.icon({
-    iconUrl: 'assets/map/marker-icon-start.png',
-    shadowUrl: 'assets/map/marker-shadow.png',
-    iconAnchor: [12, 40],
-    shadowAnchor: [12, 40],
-    popupAnchor: [0, -40]
-  });
-
-  private endIcon = L.icon({
-    iconUrl: 'assets/map/marker-icon-end.png',
-    shadowUrl: 'assets/map/marker-shadow.png',
-    iconAnchor: [12, 40],
-    shadowAnchor: [12, 40],
-    popupAnchor: [0, -40]
-  });
-
-  private userIcon = L.icon({
-    iconUrl: 'assets/map/marker-icon-user.png',
-    shadowUrl: 'assets/map/marker-shadow.png',
-    iconAnchor: [12, 40],
-    shadowAnchor: [12, 40],
-    popupAnchor: [0, -40]
-  });
+  private startIcon = START_ICON;
+  private endIcon = END_ICON;
+  private userIcon = USER_ICON;
 
   constructor() {}
 

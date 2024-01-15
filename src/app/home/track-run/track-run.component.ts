@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MapService } from '../../shared/service/map.service';
+import { MapService } from '../../shared/service/map/map.service';
 import { GeolocationService } from 'src/app/shared/service/geolocation.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, exhaustMap, interval, map } from 'rxjs';
