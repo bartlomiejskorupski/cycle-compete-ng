@@ -13,6 +13,16 @@
       pInputText
       [(ngModel)]="trackDesc"
       (keyup)="onTrackDescKeyUp()"/>
+    <div class="flex align-items-center gap-1">
+      <label for="privacy">Private</label>
+      <p-inputSwitch [(ngModel)]="isPrivate"
+        id="privacy"
+        (onChange)="onPrivacyChange()">
+      </p-inputSwitch>
+      <div class="text-red-600 text-sm w-10rem ml-2" *ngIf="!isPrivate">
+        Public tracks can be seen by everyone
+      </div>
+    </div>
   </div>
   <div class="flex-none flex gap-1 px-1 py-2">
     <button pButton

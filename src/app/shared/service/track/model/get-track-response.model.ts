@@ -10,5 +10,6 @@ export interface GetTrackResponse {
   startLongitude: number;
   startLatitude: number;
   averageTime: string;
+  privacy: 'public' | 'private';
   trackPoints: TrackPointResponse[];
 }

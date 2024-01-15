@@ -5,5 +5,6 @@ export interface CreateTrackRequest {
   description: string;
   startLongitude: number;
   startLatitude: number;
+  privacy: 'public' | 'private';
   trackPoints: TrackPointResponse[];
 }

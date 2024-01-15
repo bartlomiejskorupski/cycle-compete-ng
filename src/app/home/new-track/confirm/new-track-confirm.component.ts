@@ -16,6 +16,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
 
   name: string;
   description: string;
+  isPrivate: 'Yes' | 'No';
 
   constructor(
     private service: NewTrackService,
@@ -28,6 +29,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.name = this.service.trackName;
     this.description = this.service.trackDesc;
+    this.isPrivate = this.service.privacy === 'private' ? 'Yes' : 'No';
   }
   
   ngAfterViewInit(): void {
@@ -44,7 +46,8 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
     this.trackService.createTrack(
       this.service.trackName, 
       this.service.trackDesc,
-      this.service.route
+      this.service.route,
+      this.service.privacy
       ).subscribe({
         next: () => {
           console.log("Successfully created new Track.");

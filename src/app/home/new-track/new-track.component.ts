@@ -47,8 +47,4 @@ export class NewTrackComponent implements OnInit {
     this.router.navigate(['tracks', 'new', prevPart])
   }
 
-  isNextBtnDisabled() {
-    return !this.service.canClickNext(this.stepsActiveIndex);
-  }
-
 }

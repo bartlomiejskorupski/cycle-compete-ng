@@ -11,6 +11,7 @@ export class NewTrackInfoComponent implements OnInit{
 
   trackName: string;
   trackDesc: string;
+  isPrivate: boolean;
 
   constructor(
     private service: NewTrackService,
@@ -20,6 +21,7 @@ export class NewTrackInfoComponent implements OnInit{
   ngOnInit(): void {
     this.trackName = this.service.trackName;
     this.trackDesc = this.service.trackDesc;
+    this.isPrivate = this.service.privacy === 'private' ? true : false;
   }
 
   onTrackNameKeyUp() {
@@ -28,6 +30,10 @@ export class NewTrackInfoComponent implements OnInit{
 
   onTrackDescKeyUp() {
     this.service.trackDesc = this.trackDesc; 
+  }
+
+  onPrivacyChange() {
+    this.service.privacy = this.isPrivate ? 'private' : 'public';
   }
 
   canClickNext() {
