@@ -5,7 +5,8 @@
         icon="pi pi-stop-circle"
         iconPos="right"
         styleClass="p-button custom-button-danger text-white font-bold text-lg m-2"
-        label="Stop">
+        label="Stop"
+        (onClick)="stopClick()">
       </p-button>
     </div>
     <div class="flex-1 text-center select-none flex flex-column justify-content-center text-4xl">
@@ -27,6 +28,12 @@
             {{ instructions }}
           </div>
         </div>
+        <div class="pt-1" *ngIf="canStart">
+          <p-button label="Start run"
+            styleClass="text-xl px-4 shadow-5"
+            (click)="startRun()">
+          </p-button>
+        </div>
       </div>
       <div class="absolute bottom-0 right-0 mb-5 mr-2">
         <p-button icon="pi pi-map-marker" 
@@ -41,8 +48,8 @@
 <p-dialog
   header="Track completed"
   [showHeader]="false"
-  [visible]="false"
-  [modal]="true"
+  [(visible)]="finishedDialogVisible"
+  [modal]="false"
   [draggable]="false" 
   [resizable]="false" 
   [dismissableMask]="false" 
@@ -50,12 +57,44 @@
   maskStyleClass="bg-black-alpha-70"
   styleClass="w-full">
   <div class="mt-3 mb-4 text-4xl text-center font-bold">Track completed!</div>
-  <div class="mt-2 text-2xl text-center">Lake road</div>
-  <div class="mt-2 text-3xl text-center">Time: 00:21:19</div>
+  <div class="mt-2 text-2xl text-center">{{ trackName }}</div>
+  <div class="mt-2 text-3xl text-center">Time: {{ getTimerText() }}</div>
   <div class="mt-5">
     <p-button 
       label="Ok"
-      styleClass="w-full text-xl font-bold">
+      styleClass="w-full text-xl font-bold"
+      [disabled]="!canFinishRun"
+      routerLink="/home">
     </p-button>
   </div>
 </p-dialog>
+
+<p-dialog
+  header="Track completed"
+  [(visible)]="this.stopDialogVisible"
+  [modal]="true"
+  [draggable]="false" 
+  [resizable]="false" 
+  [dismissableMask]="true"
+  maskStyleClass="bg-black-alpha-70"
+  styleClass="w-full"
+  header="Stop">
+  <div class="py-3 text-xl">Are you sure want to end the run?</div>
+  <div class="flex justify-content-center">
+    <div class="px-1">
+      <p-button 
+        label="Cancel"
+        styleClass="p-button-secondary w-8rem text-xl font-bold"
+        (onClick)="stopCancelClick()">
+      </p-button>
+    </div>
+    <div class="px-1">
+      <p-button 
+        label="Yes"
+        styleClass="custom-button-danger w-8rem text-900 text-xl font-bold"
+        routerLink="/home">
+      </p-button>
+    </div>
+  </div>
+</p-dialog>
+

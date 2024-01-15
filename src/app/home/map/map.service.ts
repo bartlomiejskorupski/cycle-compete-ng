@@ -46,8 +46,6 @@ export class MapService implements OnDestroy {
   private routeFoundSubject = new Subject<L.LatLng[]>();
   routeFound$ = this.routeFoundSubject.asObservable();
 
-  private dottedLine: L.Polyline;
-
   private startIcon = L.icon({
     iconUrl: 'assets/map/marker-icon-start.png',
     shadowUrl: 'assets/map/marker-shadow.png',
@@ -309,6 +307,35 @@ export class MapService implements OnDestroy {
     return cont;
   }
 
+  // -----------------------------------------------------------------
+  //                            Track run
+
+  private dottedLine: L.Polyline;
+  private completedRoute: L.Polyline;
+  private aheadRoute: L.Polyline;
+  private startCircle: L.Circle;
+
+  updateRunRoute(latLngs: L.LatLngExpression[], atIndex: number) {
+    this.removeLayer(this.aheadRoute, this.completedRoute);
+    const aheadLatLngs = latLngs.slice(atIndex);
+    const completedLatLngs = latLngs.slice(0, atIndex + 1);
+    this.aheadRoute = L.polyline(aheadLatLngs, { color: '#ff0000', weight: 4 });
+    this.completedRoute = L.polyline(completedLatLngs, { color: '#00ef00', weight: 4 });
+    this.addLayer(this.aheadRoute, this.completedRoute);
+  }
+
+  updateStartCircle(latLng: L.LatLngExpression, radius = 10) {
+    this.removeLayer(this.startCircle);
+    this.startCircle = L.circle(latLng, { 
+      opacity: 0, radius: radius, fillColor: '#00ef00', fillOpacity: 0.5
+    });
+    this.addLayer(this.startCircle);
+  }
+
+  removeStartCircle() {
+    this.removeLayer(this.startCircle);
+  }
+
   updateDottedLine(from: L.LatLngExpression, to: L.LatLngExpression) {
     this.removeLayer(this.dottedLine);
     this.dottedLine = L.polyline([from, to], {
@@ -323,11 +350,27 @@ export class MapService implements OnDestroy {
     this.removeLayer(this.dottedLine);
   }
 
+  updateUserMarker(latLng: L.LatLngExpression) {
+    this.removeLayer(this.marker);
+    this.marker = L.marker(latLng, {
+      icon: this.userIcon
+    });
+    this.addLayer(this.marker);
+  }
+
   isOnPath(position: L.LatLngTuple, polylinePoints: L.LatLngTuple[], threshold = 10) {
     const dist = distanceToPath(position, polylinePoints);
     console.log('Distance from path:', dist, 'm');
     return dist <= threshold;
   }
+
+  isCloseToPoint(position: L.LatLngTuple, point: L.LatLngTuple, threshold = 10): boolean {
+    const distance = L.latLng(position).distanceTo(point);
+    return distance <= threshold;
+  }
+
+  // ----------------------------------------------------------------
+  //                             Other
 
   setView(center: L.LatLngExpression, zoom?: number, options?: L.ZoomPanOptions) {
     this.map.setView(center, zoom, options);

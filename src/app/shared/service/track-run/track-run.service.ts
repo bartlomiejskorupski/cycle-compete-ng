@@ -21,4 +21,8 @@ export class TrackRunService extends BaseHttpService{
     return this.getEnpoint(`/track/${trackId}`);
   }
 
+  createTrackRun(trackId: number, startDate: Date, endDate: Date): Observable<any> {
+    return this.postEndpoint({ trackId, startDate, endDate });
+  }
+
 }
