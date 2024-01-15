@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { ClosestTrackResponse } from 'src/app/shared/service/track/model/closest-track-response.model';
 import { GetClosestTracksResponse } from 'src/app/shared/service/track/model/get-closest-tracks-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
@@ -22,7 +23,8 @@ export class TracksComponent implements OnInit {
 
   constructor(
     private trackService: TrackService,
-    private router: Router
+    private router: Router,
+    private messages: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -41,6 +43,15 @@ export class TracksComponent implements OnInit {
         next: (res: GetClosestTracksResponse) => {
           this.loading = false;
           this.tracks = res.tracks;
+        },
+        error: err => {
+          this.messages.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err?.message,
+            life: 5000
+          });
+          this.loading = false;
         }
       });
   }
