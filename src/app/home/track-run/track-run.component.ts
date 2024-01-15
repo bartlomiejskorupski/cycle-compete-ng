@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MapService } from '../map/map.service';
+import { MapService } from '../../shared/service/map.service';
 import { GeolocationService } from 'src/app/shared/service/geolocation.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, exhaustMap, interval, map } from 'rxjs';
@@ -14,8 +14,7 @@ type Stage = 'not started' | 'started' | 'finished';
 @Component({
   selector: 'app-track-run',
   templateUrl: './track-run.component.html',
-  styleUrls: ['./track-run.component.css'],
-  //providers: [MapService]
+  styleUrls: ['./track-run.component.css']
 })
 export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 

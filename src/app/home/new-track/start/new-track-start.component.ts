@@ -1,14 +1,13 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
-import { MapService } from '../../map/map.service';
+import { MapService } from '../../../shared/service/map.service';
 import { LeafletMouseEvent } from 'leaflet';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-track-start',
   templateUrl: './new-track-start.component.html',
-  styleUrls: ['./new-track-start.component.css'],
-  //providers: [MapService]
+  styleUrls: ['./new-track-start.component.css']
 })
 export class NewTrackStartComponent implements AfterViewInit {
 

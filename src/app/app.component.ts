@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { slideOver } from './shared/animation/route-animation';
-import { SettingsService } from './home/settings/settings.service';
+import { SettingsService } from './shared/service/settings.service';
 
 @Component({
   selector: 'app-root',

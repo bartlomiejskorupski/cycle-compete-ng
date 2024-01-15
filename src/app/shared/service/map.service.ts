@@ -14,38 +14,6 @@ export class MapService implements OnDestroy {
   private polyline: L.Polyline;
   private marker: L.Marker;
 
-  private trackMarkers: {
-    [id: number]: L.Marker
-  } = {};
-
-  private trackPopupClickSubject = new Subject<number>();
-  trackPopupClick$ = this.trackPopupClickSubject.asObservable();
-
-  private geolocation?: { 
-    marker: L.Marker, 
-    circle: L.Circle, 
-    lastLatLng: L.LatLngExpression,
-    watchId: number,
-    loadingSubject: Subject<boolean>;
-  };
-
-  private routeCreation: {
-    startMarker: L.CircleMarker;
-    route: { latLng: L.LatLngExpression, marker: L.CircleMarker }[];
-    routeLine: L.Polyline;
-  }
-
-  private detailsRoute: {
-    routeStartMarker: L.CircleMarker;
-    routeEndMarker: L.CircleMarker;
-    routeLine: L.Polyline;
-  }
-
-  private routingControl: L.Routing.Control;
-
-  private routeFoundSubject = new Subject<L.LatLng[]>();
-  routeFound$ = this.routeFoundSubject.asObservable();
-
   private startIcon = L.icon({
     iconUrl: 'assets/map/marker-icon-start.png',
     shadowUrl: 'assets/map/marker-shadow.png',
@@ -101,50 +69,25 @@ export class MapService implements OnDestroy {
     }).addTo(this.map);
   }
 
-  addGeolocation(): Observable<boolean> {
-    this.geolocation = {
-      circle: L.circle([0, 0]),
-      marker: L.marker([0, 0], { icon: this.userIcon }),
-      lastLatLng: null,
-      watchId: null,
-      loadingSubject: new Subject()
-    };
-    return this.geolocation.loadingSubject.asObservable();
+  updatePolyline(latLngs: L.LatLngExpression[], opt?: L.PolylineOptions) {
+    this.removeLayer(this.polyline);
+    this.polyline = L.polyline(latLngs, opt);
+    this.addLayer(this.polyline);
   }
 
-  addRouteCreation(startLatLng: L.LatLngExpression, route: L.LatLngExpression[]) {
-    this.routeCreation = {
-      startMarker: L.circleMarker(startLatLng, { radius: 10, color: 'red' }),
-      routeLine: L.polyline([startLatLng]),
-      route: []
-    };
-
-    route.forEach(latLng => this.addRoutePoint(latLng));
-
-    this.addLayer(this.routeCreation.startMarker, this.routeCreation.routeLine);
+  updateMarker(latLng: L.LatLngExpression, opt?: L.MarkerOptions) {
+    this.removeLayer(this.marker);
+    this.marker = L.marker(latLng, opt);
+    this.addLayer(this.marker);
   }
 
-  addRoutePoint(latLng: L.LatLngExpression) {
-    const marker = L.circleMarker(latLng, { radius: 5 });
-    this.addLayer(marker);
-    this.routeCreation.routeLine.addLatLng(latLng);
+  //-----------------------------------------------------------------
+  //                        Routing machine
 
-    this.routeCreation.route.push({
-      latLng: latLng,
-      marker: marker
-    });
-  }
+  private routingControl: L.Routing.Control;
 
-  removeLastRoutePoint() {
-    const lastPoint = this.routeCreation.route.pop();
-    if(!lastPoint)
-      return;
-
-    this.removeLayer(lastPoint.marker);
-    const routeLineLatLngs = this.routeCreation.routeLine.getLatLngs();
-    routeLineLatLngs.pop();
-    this.routeCreation.routeLine.setLatLngs(routeLineLatLngs);
-  }
+  private routeFoundSubject = new Subject<L.LatLng[]>();
+  routeFound$ = this.routeFoundSubject.asObservable();
 
   addRoutingMachine(startLatLng: L.LatLngExpression) {
     this.routingControl = L.Routing.control({
@@ -183,6 +126,15 @@ export class MapService implements OnDestroy {
     this.routingControl.spliceWaypoints(pointsLen - 1, deleteNum, L.Routing.waypoint(L.latLng(latLng)));
   }
 
+  //-----------------------------------------------------------------
+  //                             Details
+
+  private detailsRoute: {
+    routeStartMarker: L.CircleMarker;
+    routeEndMarker: L.CircleMarker;
+    routeLine: L.Polyline;
+  }
+
   updateDetailsRoute(startLatLng: L.LatLngExpression, endLatLng: L.LatLngExpression, route: L.LatLngExpression[]) {
     this.removeLayer(this.detailsRoute?.routeStartMarker, this.detailsRoute?.routeLine, this.detailsRoute?.routeEndMarker);
     
@@ -197,16 +149,26 @@ export class MapService implements OnDestroy {
     this.addLayer(this.detailsRoute?.routeStartMarker, this.detailsRoute?.routeLine, this.detailsRoute?.routeEndMarker);
   }
 
-  updatePolyline(latLngs: L.LatLngExpression[], opt?: L.PolylineOptions) {
-    this.removeLayer(this.polyline);
-    this.polyline = L.polyline(latLngs, opt);
-    this.addLayer(this.polyline);
-  }
+  //-----------------------------------------------------------------
+  //                         Geolocation
 
-  updateMarker(latLng: L.LatLngExpression, opt?: L.MarkerOptions) {
-    this.removeLayer(this.marker);
-    this.marker = L.marker(latLng, opt);
-    this.addLayer(this.marker);
+  private geolocation?: { 
+    marker: L.Marker, 
+    circle: L.Circle, 
+    lastLatLng: L.LatLngExpression,
+    watchId: number,
+    loadingSubject: Subject<boolean>;
+  };
+
+  addGeolocation(): Observable<boolean> {
+    this.geolocation = {
+      circle: L.circle([0, 0]),
+      marker: L.marker([0, 0], { icon: this.userIcon }),
+      lastLatLng: null,
+      watchId: null,
+      loadingSubject: new Subject()
+    };
+    return this.geolocation.loadingSubject.asObservable();
   }
 
   geolocationClick() {
@@ -259,6 +221,16 @@ export class MapService implements OnDestroy {
     }
   }
 
+  //-----------------------------------------------------------------
+  //                         Track markers
+
+  private trackMarkers: {
+    [id: number]: L.Marker
+  } = {};
+
+  private trackPopupClickSubject = new Subject<number>();
+  trackPopupClick$ = this.trackPopupClickSubject.asObservable();
+
   updateTrackMarkers(tracks: GetTracksResponseTrack[]) {
     tracks.forEach(trackRes => {
       const existing = this.trackMarkers?.[trackRes.id];
@@ -269,9 +241,14 @@ export class MapService implements OnDestroy {
       }
       this.trackMarkers[trackRes.id].setPopupContent(this.createTrackPopup(trackRes));
     });
-
+    
   }
-
+  
+  showOnlyPrivateTracksChange(val: boolean) {
+    console.log('Show only private tracks:', val);
+    // TODO
+  }
+  
   private createTrackMarker(trackRes: GetTracksResponseTrack): L.Marker {
     const marker = L.marker([trackRes.startLatitude, trackRes.startLongitude]);
     marker.bindPopup(this.createTrackPopup(trackRes));

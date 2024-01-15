@@ -4,7 +4,7 @@ import { Subscription, mergeMap, tap } from 'rxjs';
 import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-response.model';
 import { TrackService } from 'src/app/shared/service/track/track.service';
-import { MapService } from '../map/map.service';
+import { MapService } from '../../shared/service/map.service';
 import { GetTrackRunResponse } from 'src/app/shared/service/track-run/model/get-track-run-response.model';
 import { MessageService } from 'primeng/api';
 import { UserDataService } from 'src/app/shared/service/user-data.service';
@@ -12,8 +12,7 @@ import { UserDataService } from 'src/app/shared/service/user-data.service';
 @Component({
   selector: 'app-track-details',
   templateUrl: './track-details.component.html',
-  styleUrls: ['./track-details.component.css'],
-  //providers: [MapService]
+  styleUrls: ['./track-details.component.css']
 })
 export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 

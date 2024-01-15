@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NewTrackService } from '../new-track.service';
-import { MapService } from '../../map/map.service';
+import { MapService } from '../../../shared/service/map.service';
 import { LeafletMouseEvent } from 'leaflet';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -8,8 +8,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-new-track-route',
   templateUrl: './new-track-route.component.html',
-  styleUrls: ['./new-track-route.component.css'],
-  //providers: [MapService]
+  styleUrls: ['./new-track-route.component.css']
 })
 export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -50,11 +49,6 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy 
     this.mapService.initializeMap(this.mapEl.nativeElement);
     this.mapService.addRoutingMachine(this.service.startLatLng);
 
-    // this.mapService.addRouteCreation(
-    //   this.service.startLatLng,
-    //   this.service.route
-    // );
-
     this.mapService.setView(this.service.startLatLng);
 
     this.mapService.onClick(this.onMapClick);
@@ -65,14 +59,8 @@ export class NewTrackRouteComponent implements OnInit, AfterViewInit, OnDestroy 
       console.log("onMapClick latlng is null");
       return;
     }
-    //this.mapService.addRoutePoint(e.latlng);
     this.mapService.setEndRoutePoint(e.latlng);
   }
-
-  // undoClick() {
-  //   this.mapService.removeLastRoutePoint();
-  //   this.service.route.pop();
-  // }
 
   canClickNext() {
     return this.routeFound;

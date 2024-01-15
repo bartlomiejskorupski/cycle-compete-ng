@@ -3,13 +3,12 @@ import { NewTrackService } from '../new-track.service';
 import { TrackService } from 'src/app/shared/service/track/track.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { MapService } from '../../map/map.service';
+import { MapService } from '../../../shared/service/map.service';
 
 @Component({
   selector: 'app-new-track-confirm',
   templateUrl: './new-track-confirm.component.html',
-  styleUrls: ['./new-track-confirm.component.css'],
-  //providers: [MapService]
+  styleUrls: ['./new-track-confirm.component.css']
 })
 export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
 

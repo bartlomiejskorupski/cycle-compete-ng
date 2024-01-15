@@ -5,7 +5,7 @@ import { User } from 'src/app/auth/model/user.model';
 import { UserDataService } from 'src/app/shared/service/user-data.service';
 import { UserService } from 'src/app/shared/service/user/user.service';
 import { environment } from 'src/environments/environment';
-import { SettingsService } from './settings.service';
+import { SettingsService } from '../../shared/service/settings.service';
 
 @Component({
   selector: 'app-settings',

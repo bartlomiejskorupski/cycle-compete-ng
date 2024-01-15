@@ -11,16 +11,28 @@
 </header>
 <p-sidebar [(visible)]="sidebarVisible"
   styleClass="w-6" position="left">
+
   <ng-template pTemplate="header">
     <div class="w-full font-bold">Menu</div>
   </ng-template>
+
   <ng-template pTemplate="body">
+
     <div class="nav-container">
       <p-menu [model]="navItems"></p-menu>
     </div>
+
+    <div class="flex flex-column align-items-center pt-2">
+
+      <div class="text-center text-sm mb-1">Show only my tracks</div>
+      <p-inputSwitch [(ngModel)]="onlyUserTracks" (onChange)="onChangeOnlyUserTracks()"></p-inputSwitch>
+
+    </div>
+
   </ng-template>
+
   <ng-template pTemplate="footer">
-    
   </ng-template>
+
 </p-sidebar>
 <p-menu #userMenu [model]="userMenuItems" [popup]="true"></p-menu>
