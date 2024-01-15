@@ -219,7 +219,8 @@ export class MapService implements OnDestroy {
   updateTrackMarkers(tracks: GetTracksResponseTrack[], onlyShowOfUserId?: number) {
     let markers = Object.values(this.trackMarkers);
     this.trackMarkers = {};
-    this.removeLayer(...markers);
+    // Don't remove marker if its popup is open
+    this.removeLayer(...markers.filter(m => !m.isPopupOpen()));
     
     this.lastTracks = tracks;
 
