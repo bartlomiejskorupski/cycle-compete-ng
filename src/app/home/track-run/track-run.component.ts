@@ -36,6 +36,8 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   private lastReachedPoint = 0;
   private PROXIMITY_THRESHOLD = 8;
 
+  centerOnPosition = false;
+
   canStart = false;
   canFinishRun = false;
 
@@ -76,6 +78,13 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
     this.map.onClick(pos => console.log(pos.latlng.lat, pos.latlng.lng));
     // DEBUG
 
+    const self = this;
+    this.map.onMove(function(e) {
+      if(e.sourceTarget !== this) {
+        self.centerOnPosition = false;
+      }
+    });
+
     this.subs.push(
       this.route.queryParams.pipe(
         map(params => +params['trackId']),
@@ -97,6 +106,11 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   private handleGeoSuccess(pos: GeolocationPosition) {
     this.speed = this.metersPerSecondToKmph(pos.coords.speed);
     this.position = [pos.coords.latitude, pos.coords.longitude];
+
+    if(this.centerOnPosition) {
+      this.map.setView(this.position);
+    }
+
     this.updateRunProgress();
   }
 
@@ -245,8 +259,10 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   navigationClick() {
-    if(!!this.position)
+    this.centerOnPosition = true;
+    if(this.position){
       this.map.setView(this.position);
+    }
   }
 
   stopClick() {
