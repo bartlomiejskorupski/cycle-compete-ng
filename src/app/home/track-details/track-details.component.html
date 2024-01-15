@@ -1,3 +1,4 @@
+<p-menu #detailsMenu [model]="detailsMenuItems" [popup]="true"></p-menu>
 <div class="flex flex-column h-screen-dynamic surface-ground">
   <div class="flex-none surface-card flex">
     <div class="flex-1 flex justify-content-start align-items-center">
@@ -8,7 +9,14 @@
         </p-button>
     </div>
     <div class="flex-none text-primary text-center text-xl font-bold py-3 select-none">Track details</div>
-    <div class="flex-1"></div>
+    <div class="flex-1 flex justify-content-end">
+      <p-button
+        icon="pi pi-ellipsis-v"
+        styleClass="p-button-text p-button-lg text-sm py-3 px-4 m-1"
+        (onClick)="detailsMenu.toggle($event)"
+        *ngIf="detailsMenuItems?.length > 0">
+      </p-button>
+    </div>
   </div>
   <div class="flex-grow-1 text-700 flex flex-column">
     <div class="flex-grow-1">
@@ -51,12 +59,6 @@
               [disabled]="!track?.id"
               label="Start">
             </p-button>
-            <button pButton
-              class="w-full custom-button-danger font-bold"
-              label="Delete"
-              (click)="deleteTrackClick()"
-              [disabled]="deleteTrackAllowed">
-            </button>
           </div>
         </div>
     </div>

@@ -6,7 +6,7 @@ import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-r
 import { TrackService } from 'src/app/shared/service/track/track.service';
 import { MapService } from '../../shared/service/map/map.service';
 import { GetTrackRunResponse } from 'src/app/shared/service/track-run/model/get-track-run-response.model';
-import { MessageService } from 'primeng/api';
+import { MenuItem, MessageService } from 'primeng/api';
 import { UserDataService } from 'src/app/shared/service/user-data.service';
 
 @Component({
@@ -18,7 +18,9 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('map') mapEl: ElementRef<HTMLDivElement>;
 
-  deleteTrackAllowed = true;
+  detailsMenuItems: MenuItem[] = [];
+
+  deleteTrackAllowed = false;
   deleteDialogVisible = false;
   deleteDialogLoading = false;
 
@@ -42,7 +44,10 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       mergeMap(params => this.trackService.getTrack(+params.get('id'))),
       tap(trackRes => {
         this.track = trackRes;
-        this.deleteTrackAllowed = this.track.creatorId === this.userService.user.id || this.userService.user.role === 'ADMIN' ? false : true;
+        this.deleteTrackAllowed = this.track.creatorId === this.userService.user.id || this.userService.user.role === 'ADMIN';
+        if (this.deleteTrackAllowed) {
+          this.detailsMenuItems.push({ icon: 'pi pi-trash', label: 'Delete', iconStyle: { color: 'red' }, command: this.deleteTrackClick.bind(this) });
+        }
       }),
       mergeMap(trackRes => this.trackRunService.getBestTrackRuns(trackRes.id)),
       tap(res => this.trackRuns = res.trackRuns)
@@ -58,7 +63,8 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateMap() {
-    this.mapService.setView([this.track.startLatitude, this.track.startLongitude]);
+    const trackLatLngs = this.track.trackPoints.map(tp => [tp.latitude, tp.longitude] as L.LatLngTuple);
+    this.mapService.fitOnMap(trackLatLngs)
 
     const lastPoint = this.track.trackPoints[this.track.trackPoints.length - 1];
     const endLatLng: [number, number] = [lastPoint.latitude, lastPoint.longitude];
