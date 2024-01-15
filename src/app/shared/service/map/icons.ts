@@ -23,3 +23,11 @@ export const USER_ICON = icon({
   shadowAnchor: [12, 40],
   popupAnchor: [0, -40]
 });
+
+export const PRIVATE_ICON = icon({
+  iconUrl: 'assets/map/marker-icon-private.png',
+  shadowUrl: 'assets/map/marker-shadow.png',
+  iconAnchor: [12, 40],
+  shadowAnchor: [12, 40],
+  popupAnchor: [0, -40]
+});

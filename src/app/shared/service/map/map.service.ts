@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs";
 import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-tracks-response-track.model";
 import { distanceToPath } from "src/app/shared/utils/distance-utils";
 import { environment } from "src/environments/environment";
-import { END_ICON, START_ICON, USER_ICON } from "./icons";
+import { END_ICON, PRIVATE_ICON, START_ICON, USER_ICON } from "./icons";
 
 @Injectable({ providedIn: 'root' })
 export class MapService implements OnDestroy {
@@ -18,6 +18,7 @@ export class MapService implements OnDestroy {
   private startIcon = START_ICON;
   private endIcon = END_ICON;
   private userIcon = USER_ICON;
+  private privateIcon = PRIVATE_ICON;
 
   constructor() {}
 
@@ -240,7 +241,9 @@ export class MapService implements OnDestroy {
   }
   
   private createTrackMarker(trackRes: GetTracksResponseTrack): L.Marker {
-    const marker = L.marker([trackRes.startLatitude, trackRes.startLongitude]);
+    const marker = L.marker([trackRes.startLatitude, trackRes.startLongitude], {
+      icon: trackRes.privacy === 'private' ? this.privateIcon : new L.Icon.Default()
+    });
     marker.bindPopup(this.createTrackPopup(trackRes));
     return marker;
   }
