@@ -46,18 +46,7 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
         this.deleteTrackAllowed = this.track.creatorId === this.userService.user.id || this.userService.user.role === 'ADMIN' ? false : true;
       }),
       mergeMap(trackRes => this.trackRunService.getBestTrackRuns(trackRes.id)),
-      tap(_ => {
-        this.trackRuns = [
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '8:21' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '9:48' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:12' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:18' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:22' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:24' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:29' },
-          { userFirstName: 'Tester', userLastName: 'Testington', duration: '10:42' },
-        ];
-      })
+      tap(res => this.trackRuns = res.trackRuns)
     ).subscribe({ next: _ => this.updateMap() });
   }
     
@@ -70,6 +59,8 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   updateMap() {
+    console.log(this.trackRuns);
+    
     this.mapService.setView([this.track.startLatitude, this.track.startLongitude]);
 
     const lastPoint = this.track.trackPoints[this.track.trackPoints.length - 1];

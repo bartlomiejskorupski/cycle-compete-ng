@@ -14,9 +14,19 @@
         <div class="col-fixed w-4rem">Time</div>
         <hr class="col-11"/>
       </div>
-      <div class="flex-grow-1 grid grid-nogutter text-lg overflow-y-auto align-content-start">
-        <div class="col-12 grid grid-nogutter pt-3" *ngFor="let run of runs">
-          <div class="col-fixed w-6rem text-center">{{ run.endDate | date:'dd.MM.yyyy' }}</div>
+      <div class="flex flex-column align-items-center"
+        *ngIf="loading">
+        <i class="pi pi-spinner pi-spin text-2xl"></i>
+      </div>
+      <div class="pl-4 text-400"
+        *ngIf="runs.length === 0 && !loading">
+        No runs yet...
+      </div>
+      <div class="flex-grow-1 grid grid-nogutter text-lg overflow-y-auto align-content-start"
+        *ngIf="runs.length > 0">
+        <div class="col-12 grid grid-nogutter pt-2 pb-1" *ngFor="let run of runs">
+          <div class="col-fixed w-6rem text-center">
+            {{ run.endDateFormatted | date:'dd.MM.yyyy' }}</div>
           <div class="col pl-1">{{ run.trackName }}</div>
           <div class="col-fixed flex justify-content-center w-4rem">
             {{ run.duration }}

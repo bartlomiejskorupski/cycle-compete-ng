@@ -4,6 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { UserDataService } from "../user-data.service";
 import { Observable } from "rxjs";
 import { GetTrackRunsResponse } from "./model/get-track-runs-response.mode";
+import { GetTrackHistoryResponse } from "./model/get-track-history-response.model";
 
 @Injectable({ providedIn: 'root' })
 export class TrackRunService extends BaseHttpService{
@@ -23,6 +24,10 @@ export class TrackRunService extends BaseHttpService{
 
   createTrackRun(trackId: number, startDate: Date, endDate: Date): Observable<any> {
     return this.postEndpoint({ trackId, startDate, endDate });
+  }
+
+  getUserHistory(): Observable<GetTrackHistoryResponse> {
+    return this.getEnpoint('/user');
   }
 
 }

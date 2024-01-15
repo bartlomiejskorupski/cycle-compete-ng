@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { TrackRunHistory } from 'src/app/shared/service/track-run/model/track-run-history.model';
+import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 
 @Component({
   selector: 'app-history',
@@ -9,21 +11,32 @@ import { TrackRunHistory } from 'src/app/shared/service/track-run/model/track-ru
 export class HistoryComponent implements OnInit, OnDestroy{
 
   runs: TrackRunHistory[] = [];
+  loading = false;
 
-  constructor() {}
+  private sub: Subscription;
+
+  constructor(
+    private trackRunService: TrackRunService
+  ) {}
 
   ngOnInit(): void {
-    this.runs = [
-      { trackName: 'Spinner tour', endDate: new Date(2023, 11, 8), duration: '7:45'},
-      { trackName: 'Spinner tour', endDate: new Date(2023, 11, 8), duration: '7:21'},
-      { trackName: 'Spinner tour', endDate: new Date(2023, 11, 8), duration: '7:53'},
-      { trackName: 'Example st.', endDate: new Date(2023, 10, 23), duration: '20:23'},
-      { trackName: 'Example st.', endDate: new Date(2023, 10, 20), duration: '19:56'},
-    ];
+    this.loading = true;
+    this.trackRunService.getUserHistory().subscribe({
+      next: res => {
+        this.loading = false;
+        this.runs = res.trackRuns;
+        this.runs.forEach(run => run.endDateFormatted = this.numArrayToDate(run.endDate));
+      },
+      error: _ => this.loading = false
+    });
   }
 
   ngOnDestroy(): void {
-    
+    this.sub?.unsubscribe();
+  }
+
+  private numArrayToDate(arr: number[]): Date {
+    return new Date(arr[0], arr[1] - 1, arr[2]);
   }
 
 }

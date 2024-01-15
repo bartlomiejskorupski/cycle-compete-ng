@@ -25,7 +25,12 @@
             <hr class="col-12"/>
           </div>
           <div class="flex-grow-1 text-lg align-content-start overflow-hidden">
-            <div class="h-full overflow-y-scroll">
+            <div class="text-md text-400"
+              *ngIf="trackRuns.length === 0">
+              No runs yet...
+            </div>
+            <div class="h-full overflow-y-scroll"
+              *ngIf="trackRuns.length > 0">
               <div class="py-1 grid grid-nogutter" *ngFor="let run of trackRuns; let i = index">
                 <div class="col-fixed w-1 text-center"
                   *ngIf="i !== 0">
@@ -34,7 +39,7 @@
                 <app-crown-icon style="width: 1.75rem; height: 1.5rem;"
                   *ngIf="i === 0">
                 </app-crown-icon>
-                <div class="col pl-2">{{ run.userFirstName }} {{ run.userLastName }}</div>
+                <div class="col pl-2">{{ run.userFirstname }} {{ run.userLastname }}</div>
                 <div class="col-fixed w-2 text-right pr-2">{{ run.duration }}</div>
               </div>
             </div>
