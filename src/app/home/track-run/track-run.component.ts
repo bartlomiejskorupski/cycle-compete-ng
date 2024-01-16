@@ -22,9 +22,11 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 
   stage: Stage = 'not started';
 
-  private timer = {
+  timer = {
+    formatted: '00:00:00',
     start: new Date(),
-    now: new Date()
+    end: null,
+    finalFormatted: '00:00:00'
   };
 
   speed = 0;
@@ -59,6 +61,7 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+    this.geo.stopWatching();
   }
 
   ngOnInit(): void {
@@ -156,10 +159,6 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
         this.instructions = '';
       }
     }
-    else if (this.stage === 'finished') {
-
-    }
-
   }
 
   private calculateRouteProgress() {
@@ -169,9 +168,6 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let nextPoint = this.routePoints[this.lastReachedPoint + 1];
     
-    console.log(nextPoint, this.lastReachedPoint, this.routePoints.length);
-    
-
     let nextPointReached = this.map.isCloseToPoint(this.position, nextPoint, this.PROXIMITY_THRESHOLD);
     let updateRoute = false;
 
@@ -196,9 +192,10 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   private checkIfFinished(): boolean {
     if(this.lastReachedPoint >= this.routePoints.length - 1) {
       this.stage = 'finished';
-      this.timer.now = new Date();
+      this.timer.end = new Date();
+      this.timer.finalFormatted = formatTimer(this.timer.start, this.timer.end);
       this.finishedDialogVisible = true;
-      this.trackRunService.createTrackRun(this.trackId, this.timer.start, this.timer.now)
+      this.trackRunService.createTrackRun(this.trackId, this.timer.start, this.timer.end)
         .subscribe({ 
           next: _ => this.canFinishRun = true,
           error: err => {
@@ -218,10 +215,8 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
 
   startRun() {
     this.timer.start = new Date();
-    this.timer.now = new Date();
     this.stage = 'started';
     this.canStart = false;
-    console.log('Run started');
 
     this.map.removeDottedLine();
     this.map.removeStartCircle();
@@ -240,21 +235,18 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateTimer() {
-    if(this.stage === 'finished'){
+    if(this.stage !== "started") {
       return;
     }
-    this.timer.now = new Date();
-  }
+    const timerFormatted = formatTimer(this.timer.start, new Date());
 
-  getTimerText(): string {
-    if(this.stage === 'not started') {
-      return '00:00:00';
+    if(timerFormatted && this.timer.formatted !== timerFormatted) {
+      this.timer.formatted = timerFormatted;
     }
-    return formatTimer(this.timer.start, this.timer.now);
   }
 
   private metersPerSecondToKmph(mps: number): number {
-    return mps*3600/1000;
+    return mps*3.6;
   }
 
   navigationClick() {
