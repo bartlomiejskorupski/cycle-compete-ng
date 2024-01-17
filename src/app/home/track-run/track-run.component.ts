@@ -68,7 +68,7 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(
       this.geo.position$.subscribe(this.handleGeoSuccess.bind(this)),
       this.geo.error$.subscribe(this.handleGeoError.bind(this)),
-      interval(100).subscribe(this.updateTimer.bind(this))
+      interval(250).subscribe(this.updateTimer.bind(this))
     );
     this.geo.watchPosition();
   }

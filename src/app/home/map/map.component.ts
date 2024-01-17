@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { Subject, Subscription, auditTime, catchError, exhaustMap, mergeMap, of } from 'rxjs';
+import { Subject, Subscription, auditTime, catchError, exhaustMap, map, mergeMap, of } from 'rxjs';
 import { User } from 'src/app/auth/model/user.model';
 import { MapService } from 'src/app/shared/service/map/map.service';
 import { SettingsService } from 'src/app/shared/service/settings.service';
@@ -42,8 +42,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.push(
       this.mapUpdateSubject.pipe(
         auditTime(1000),
-        exhaustMap(() => 
-          this.trackService.getTracksInsideBounds(this.mapService.getBounds())
+        exhaustMap(() => {
+          const bounds = this.mapService.getBounds();
+          return this.trackService.getTracksInsideBounds(bounds)
             .pipe(
               catchError(err => {
                 this.messages.clear();
@@ -53,9 +54,10 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
                   life: 15000
                 });
                 return of();
-              })
+              }),
+              map(res => ({ res, bounds }))
             )
-        )
+        })
       ).subscribe({
         next: this.updateTrackMarkers.bind(this),
         error: _ => console.log('ERROR: Map update observable ended.')
@@ -63,9 +65,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  updateTrackMarkers(res: GetTracksResponse) {
+  updateTrackMarkers(val: { res: GetTracksResponse, bounds: L.LatLngBounds }) {
     const onlyUserTracks = this.settings.getShowOnlyMyTracks();
-    this.mapService.updateTrackMarkers(res.tracks, onlyUserTracks ? this.user.id : null);
+    this.mapService.updateTrackMarkers(val.res.tracks, onlyUserTracks ? this.user.id : null, val.bounds);
   }
 
   ngOnDestroy(): void {

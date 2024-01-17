@@ -31,7 +31,6 @@ export class MapService implements OnDestroy {
 
   initializeMap(element: HTMLElement, opt?: { view?: L.LatLngExpression, zoom?: number }): void {
     this.trackMarkers = {};
-    this.lastTracks = [];
 
     const view = opt?.view ?? this.map?.getCenter() ?? [54.370978, 18.612741];
     const zoom = opt?.zoom ?? this.map?.getZoom() ?? 18;
@@ -208,37 +207,60 @@ export class MapService implements OnDestroy {
   //                         Track markers
 
   private trackMarkers: {
-    [id: number]: L.Marker
+    [id: string]: { 
+      marker: L.Marker,
+      creatorId: number
+    }
   } = {};
-
-  private lastTracks: GetTracksResponseTrack[] = [];
 
   private trackPopupClickSubject = new Subject<number>();
   trackPopupClick$ = this.trackPopupClickSubject.asObservable();
 
-  updateTrackMarkers(tracks: GetTracksResponseTrack[], onlyShowOfUserId?: number) {
-    let markers = Object.values(this.trackMarkers);
-    this.trackMarkers = {};
-    // Don't remove marker if its popup is open
-    this.removeLayer(...markers.filter(m => !m.isPopupOpen()));
-    
-    this.lastTracks = tracks;
-
-    let filteredTracks = tracks;
-    if(onlyShowOfUserId) {
-      filteredTracks = tracks.filter(tRes => tRes.creatorId === onlyShowOfUserId);
+  updateTrackMarkers(tracks: GetTracksResponseTrack[], onlyShowOfUserId: number, bounds: L.LatLngBounds) {
+    // Remove all markers that are in bounds of the map, but are not in the response
+    for(const id in this.trackMarkers) {
+      const inBounds = bounds.contains(this.trackMarkers[id].marker.getLatLng());
+      if(inBounds && !tracks.map(t => t.id+'').includes(id)) {
+        this.removeLayer(this.trackMarkers[id].marker);
+        delete this.trackMarkers[id];
+      }
     }
     
-    for(const trackRes of filteredTracks) {
-      this.trackMarkers[trackRes.id] = this.createTrackMarker(trackRes);
-      this.trackMarkers[trackRes.id].setPopupContent(this.createTrackPopup(trackRes));
+    // Add every track from response that isn't already in markers
+    for(const track of tracks) {
+      if(!(track.id in this.trackMarkers)) {
+        const newMarker = this.createTrackMarker(track);
+        newMarker.setPopupContent(this.createTrackPopup(track));
+        this.trackMarkers[track.id] = { marker: newMarker, creatorId: track.creatorId };
+      }
     }
 
-    this.addLayer(...Object.values(this.trackMarkers));
+    // Filter for all or only private markers
+    const filteredMarkers = this.filterTrackMarkers(onlyShowOfUserId);
+
+    // Add markers after filtering to map (will only add if they aren't already on the map)
+    this.addLayer(...filteredMarkers);
   }
 
-  showOnlyPrivateTracksChange(val: boolean, userId: number) {
-    this.updateTrackMarkers(this.lastTracks, val ? userId : null);
+  showOnlyPrivateTracksChange(onlyPrivate: boolean, userId: number) {
+    // Remove all markers from map
+    this.removeLayer(...Object.values(this.trackMarkers).map(v => v.marker));
+    // Filter for all or only private markers
+    const filteredMarkers = this.filterTrackMarkers(onlyPrivate ? userId : null);
+    // Add all after filter
+    this.addLayer(...filteredMarkers);
+  }
+
+  private filterTrackMarkers(onlyPrivateUserId: number): L.Marker[] {
+    const onlyPrivate = !!onlyPrivateUserId;
+
+    const filteredMarkers: L.Marker[] = [];
+    for (const id in this.trackMarkers) {
+      if(!onlyPrivate || this.trackMarkers[id].creatorId === onlyPrivateUserId) {
+        filteredMarkers.push(this.trackMarkers[id].marker);
+      }
+    }
+    return filteredMarkers;
   }
   
   private createTrackMarker(trackRes: GetTracksResponseTrack): L.Marker {
