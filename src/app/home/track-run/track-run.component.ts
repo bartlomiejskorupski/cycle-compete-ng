@@ -99,7 +99,11 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
     this.trackId = res.id;
     this.trackName = res.name;
     this.map.setView([res.startLatitude, res.startLongitude], 19);
-    this.routePoints = res.trackPoints.map(tp => [tp.latitude, tp.longitude] as L.LatLngTuple);
+
+    this.routePoints = res.trackPoints
+      .sort((a, b) => a.sequencePosition - b.sequencePosition)
+      .map(tp => [tp.latitude, tp.longitude] as L.LatLngTuple);
+
     this.map.updateRunRoute(this.routePoints, 0);
     this.map.updateStartCircle(this.routePoints[0], this.PROXIMITY_THRESHOLD);
     this.fitUserAndStartOnce();

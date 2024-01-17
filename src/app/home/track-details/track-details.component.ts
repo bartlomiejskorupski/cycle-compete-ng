@@ -44,6 +44,8 @@ export class TrackDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       mergeMap(params => this.trackService.getTrack(+params.get('id'))),
       tap(trackRes => {
         this.track = trackRes;
+        this.track.trackPoints.sort((a, b) => a.sequencePosition - b.sequencePosition);
+        
         this.deleteTrackAllowed = this.track.creatorId === this.userService.user.id || this.userService.user.role === 'ADMIN';
         if (this.deleteTrackAllowed) {
           this.detailsMenuItems.push({ icon: 'pi pi-trash', label: 'Delete', iconStyle: { color: 'red' }, command: this.deleteTrackClick.bind(this) });

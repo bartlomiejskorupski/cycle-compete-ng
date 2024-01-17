@@ -91,11 +91,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         next: (track: GetTrackResponse) => {
           if(!track)
             return;
-          // console.log(track);
-          this.mapService.setView([track.startLatitude, track.startLongitude], 18);
-          track.trackPoints.sort((a, b) => a.sequencePosition - b.sequencePosition);
-          const latLngs = track.trackPoints.map(tp => [tp.latitude, tp.longitude]);
-          this.mapService.updatePolyline(latLngs as L.LatLngExpression[]);      
+          this.router.navigate(['details', track.id]);
+          //this.mapService.setView([track.startLatitude, track.startLongitude], 18);
+          //track.trackPoints.sort((a, b) => a.sequencePosition - b.sequencePosition);
+          //const latLngs = track.trackPoints.map(tp => [tp.latitude, tp.longitude]);
+          //this.mapService.updatePolyline(latLngs as L.LatLngExpression[]);      
         }
       })
     );

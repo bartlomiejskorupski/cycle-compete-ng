@@ -6,6 +6,7 @@ import { GetTracksResponseTrack } from "src/app/shared/service/track/model/get-t
 import { distanceToPath } from "src/app/shared/utils/distance-utils";
 import { environment } from "src/environments/environment";
 import { END_ICON, PRIVATE_ICON, START_ICON, USER_ICON } from "./icons";
+import { GetTrackResponse } from "../track/model/get-track-response.model";
 
 @Injectable({ providedIn: 'root' })
 export class MapService implements OnDestroy {

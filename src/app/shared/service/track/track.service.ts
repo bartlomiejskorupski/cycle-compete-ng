@@ -43,6 +43,9 @@ export class TrackService extends BaseHttpService{
       sequencePosition: index
     }));
     
+    console.log('Track points:', trackPoints);
+    
+
     const requestBody: CreateTrackRequest = {
       name,
       description: desc,
