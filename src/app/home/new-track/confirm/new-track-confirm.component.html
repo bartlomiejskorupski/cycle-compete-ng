@@ -18,11 +18,14 @@
       <button pButton
         label="Back"
         class="p-button-secondary w-full"
+        [disabled]="confirmLoading"
         (click)="backClick()">
       </button>
       <button pButton
         class="w-full"
         label="Confirm"
+        [icon]="confirmLoading ? 'pi pi-spinner pi-spin' : ''"
+        [disabled]="confirmLoading"
         (click)="onConfirmClick()">
       </button>
   </div>

@@ -17,6 +17,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
   name: string;
   description: string;
   isPrivate: 'Yes' | 'No';
+  confirmLoading = false;
 
   constructor(
     private service: NewTrackService,
@@ -43,6 +44,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
   }
   
   onConfirmClick() {
+    this.confirmLoading = true;
     this.trackService.createTrack(
       this.service.trackName, 
       this.service.trackDesc,
@@ -50,6 +52,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
       this.service.privacy
       ).subscribe({
         next: () => {
+          this.confirmLoading = false;
           console.log("Successfully created new Track.");
           this.messages.add({
             severity: 'success',
@@ -59,6 +62,7 @@ export class NewTrackConfirmComponent implements OnInit, AfterViewInit {
           this.router.navigate(['home']);
         },
         error: err => {
+          this.confirmLoading = false;
           console.log(err);
           this.messages.add({
             severity: 'error',
