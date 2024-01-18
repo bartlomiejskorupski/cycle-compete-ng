@@ -1,12 +1,12 @@
-import { Injectable, OnDestroy, OnInit } from "@angular/core";
-import { Subject } from "rxjs";
+import { Injectable, OnDestroy } from "@angular/core";
+import { ReplaySubject, Subject } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class GeolocationService implements OnDestroy {
 
   private watchId: number = null;
 
-  private positionSubject = new Subject<GeolocationPosition>();
+  private positionSubject = new ReplaySubject<GeolocationPosition>(1);
   position$ = this.positionSubject.asObservable();
 
   private errorSubject = new Subject<GeolocationPositionError>();
@@ -27,7 +27,7 @@ export class GeolocationService implements OnDestroy {
       pos => this.positionSubject.next(pos),
       err => this.errorSubject.next(err),
       {
-        timeout: timeout ?? 5000,
+        timeout: timeout ?? 3000,
         enableHighAccuracy: true
       }
     );
@@ -45,17 +45,15 @@ export class GeolocationService implements OnDestroy {
     return !!this.watchId;
   }
 
-  getPosition(): Promise<GeolocationPosition> {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        pos => resolve(pos),
-        err => reject(err),
-        {
-          timeout: 3000,
-          enableHighAccuracy: true
-        }
-      );
-    });
+  getPosition(timeout?: number) {
+    navigator.geolocation.getCurrentPosition(
+      pos => this.positionSubject.next(pos),
+      err => this.errorSubject.next(err),
+      {
+        timeout: timeout ?? 3000,
+        enableHighAccuracy: true
+      }
+    );
   }
 
 }
