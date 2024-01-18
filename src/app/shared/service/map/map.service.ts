@@ -180,7 +180,7 @@ export class MapService implements OnDestroy {
     const { latitude, longitude, accuracy } = pos.coords;
     const latLng: L.LatLngExpression = [latitude, longitude];
     
-    console.log(`Geolocation reading, Accuracy: ${accuracy.toFixed(2)}m`);
+    //console.log(`Geolocation reading, Accuracy: ${accuracy.toFixed(2)}m`);
     if (!this.geolocation.lastLatLng) {
       this.map.setView(latLng, 18);
     }

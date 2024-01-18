@@ -8,6 +8,7 @@ import { GetTrackResponse } from 'src/app/shared/service/track/model/get-track-r
 import { formatTimer } from 'src/app/shared/utils/date-utils';
 import { TrackRunService } from 'src/app/shared/service/track-run/track-run.service';
 import { MessageService } from 'primeng/api';
+import { WakeLockService } from 'src/app/shared/service/wake-lock.service';
 
 type Stage = 'not started' | 'started' | 'finished';
 
@@ -56,15 +57,18 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private trackService: TrackService,
     private trackRunService: TrackRunService,
-    private messages: MessageService
+    private messages: MessageService,
+    private wakeLock: WakeLockService
   ) { }
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
     this.geo.stopWatching();
+    this.wakeLock.release();
   }
 
   ngOnInit(): void {
+    this.wakeLock.lock();
     this.subs.push(
       this.geo.position$.subscribe(this.handleGeoSuccess.bind(this)),
       this.geo.error$.subscribe(this.handleGeoError.bind(this)),
@@ -110,6 +114,8 @@ export class TrackRunComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private handleGeoSuccess(pos: GeolocationPosition) {
+    console.log("Geo pos data:", pos.coords.latitude, pos.coords.longitude);
+    
     this.speed = this.metersPerSecondToKmph(pos.coords.speed);
     this.position = [pos.coords.latitude, pos.coords.longitude];
 
